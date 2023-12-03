@@ -1,0 +1,105 @@
+<div class="container-fluid">
+
+  <div class="row bg-dark">
+    <div class="col-2 d-flex align-items-center">
+      <a class="link-offset-2 link-underline link-underline-opacity-0 m-3" routerLink="/main">Return to Home</a>
+    </div>
+    <div class="col-7"></div>
+    <div class="col-2 d-flex justify-content-center py-3">
+      <div class="border border-light bg-success rounded-3 d-flex justify-content-center align-items-center">
+        <p class="text-light m-2">{{playerName}}</p>
+      </div>
+    </div>
+    <div class="col-1">
+      <button type="button" (click)="logout()" class="btn btn-success my-4">Logout</button>
+    </div>
+  </div>
+
+  <div class="row bg-secondary">
+    <div class="col">
+      <h5 class="display-5 text-light m-3">Guild Creation</h5>
+    </div>
+    <div class="col-7"></div>
+    <div class="col-1 d-flex justify-content-center align-items-center">
+      <button class="btn btn-success" routerLink="/gsearch" *ngIf="!requestSuccess">Search</button>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="!requestSuccess">
+    <div class="col-4"></div>
+    <div class="col">
+      <div class="row d-flex justify-content-center">
+        <p class="text-light m-3">New Guild Information</p>
+      </div>
+
+      <form id="creation-form" [formGroup]="form" (ngSubmit)="createGuildRequest()">
+        <div class="form-group m-3">
+          <label for="guild-name">New Guild Name:</label>
+          <input id="guild-name" type="text" class="form-control"
+                 [(ngModel)]="newName" formControlName="name"
+                 [ngClass]="{ 'is-invalid': submitted && f['name'].errors }"
+                 placeholder="Enter your new guild's name" />
+          <div *ngIf="submitted && f['name'].errors">
+            <p class="text-danger m-1" *ngIf="submitted && f['name'].errors['required']">Guild Name is required</p>
+            <p class="text-danger m-1" *ngIf="submitted && f['name'].errors['maxLength']">Guild name cannot exceed 32 characters</p>
+          </div>
+        </div>
+
+        <div class="form-group m-3">
+          <label for="welcome-message">Recruitment Message:</label>
+          <input id="welcome-message" type="text" class="form-control"
+                 [(ngModel)]="newWelcome" formControlName="welcome"
+                 [ngClass]="{ 'is-invalid': submitted && f['welcome'].errors }"
+                 placeholder="Enter your new guild's welcome message" />
+          <div *ngIf="submitted && f['welcome'].errors">
+            <p class="text-danger m-1" *ngIf="submitted && f['welcome'].errors['required']">Welcome is required</p>
+            <p class="text-danger m-1" *ngIf="submitted && f['welcome'].errors['maxLength']">Welcome cannot exceed 255 characters</p>
+          </div>
+        </div>
+
+        <div class="form-group m-3">
+          <label for="guild-greeting">Greeting for Guild Members:</label>
+          <input id="guild-greeting" type="text" class="form-control"
+                 [(ngModel)]="newGreeting" formControlName="greeting"
+                 [ngClass]="{ 'is-invalid': submitted && f['greeting'].errors }"
+                 placeholder="Enter your new guild's member greeting" />
+          <div *ngIf="submitted && f['greeting'].errors">
+            <p class="text-danger m-1" *ngIf="submitted && f['greeting'].errors['maxLength']">Greeting cannot exceed 255 characters</p>
+          </div>
+        </div>
+
+        <div class="form-group m-3 justify-content-center align-items-center">
+          <button class="btn btn-success" type="submit" form="creation-form">Create</button>
+        </div>
+      </form>
+    </div>
+    <div class="col-4"></div>
+  </div>
+
+  <div class="row d-flex justify-content-center" *ngIf="requestSuccess">
+    <div class="col-4"></div>
+
+    <div class="border rounded-3 bg-success m-3">
+      <div class="col d-flex justify-content-center align-items-center">
+
+        <div class="row">
+          <p class="text-light m-3">Congratulations, you've started your own guild!'</p>
+        </div>
+
+        <div class="row">
+          <div class="col-1"></div>
+          <div class="border rounded-3 bg-light">
+            <div class="col d-flex justify-content-center">
+              <a class="m-3" routerLink="/guild">To Guild Page</a>
+            </div>
+          </div>
+          <div class="col-1"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="col-4"></div>
+  </div>
+
+</div>

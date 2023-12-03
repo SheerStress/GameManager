@@ -1,0 +1,63 @@
+
+<div class="container-fluid bg-dark">
+
+  <div class="row bg-secondary">
+    <div class="col-9"></div>
+    <div class="col-2 d-flex justify-content-end py-3">
+      <div class="border border-light bg-success rounded-3 d-flex justify-content-center align-items-center">
+        <p class="text-light m-2">{{playerName}}</p>
+      </div>
+    </div>
+    <div class="col-1">
+      <div class="border-start">
+        <button type="button" (click)="logout()" class="btn btn-success m-4">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row bg-dark">
+    <div class="col-3"><h1 class="display-6 text-light">Player Data Manager</h1></div>
+    <div class="col"></div>
+  </div>
+
+  <div class="row bg-secondary d-flex justify-content-center align-items-center">
+    <h6 class="text-light my-1 d-flex justify-content-center">{{greeting}}</h6>
+  </div>
+
+  <div class="row" style="height: 70vh;">
+    <div class="col-4"></div>
+
+    <div class="col">
+
+      <div class="row bg-primary" style="max-height: 17vh;">
+        <button id="itemstore" class="btn btn-primary d-flex justify-content-between" style="max-height: inherit; overflow: hidden;" routerLink="/items">
+          <h6 class="display-6">Item Store</h6>
+          <img src="/assets/icons/store.png" style="height: 17vw; max-width: 17vw; position: relative; left: 65px; bottom: 45px;" />
+        </button>
+      </div>
+      <div class="row bg-success" style="max-height: 17vh;">
+        <button id="guildpage" class="btn btn-success d-flex justify-content-between" style="max-height: inherit; overflow: hidden;" (click)="guildRedirect()">
+          <h6 class="display-6">Guild</h6>
+          <img src="/assets/icons/guild.png" style="height: 17vw; max-width: 17vw; position: relative; left: 70px; bottom: 15px; "/>
+        </button>
+      </div>
+      <div class="row bg-secondary" style="max-height: 17vh;">
+        <button id="settings" class="btn btn-secondary d-flex justify-content-between" style="max-height: inherit; overflow: hidden;" routerLink="/settings">
+          <h6 class="display-6 text-light">Settings</h6>
+          <img src="/assets/icons/settings.png" style="height: 17vw; max-width: 17vw; position: relative; left: 60px; bottom: 30px; "/>
+        </button>
+      </div>
+      <div class="row bg-secondary" style="height: 17vh;">
+        <button id="inventory" class="btn btn-info" routerLink="/inventory">
+          <h6 class="display-6">View Inventory</h6>
+        </button>
+      </div>
+
+    </div>
+
+
+    <div class="col-4"></div>
+  </div>
+
+</div>
+

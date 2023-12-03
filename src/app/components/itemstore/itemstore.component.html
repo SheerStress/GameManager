@@ -1,0 +1,179 @@
+<div class="container-fluid">
+
+  <div class="row bg-dark">
+    <div class="col-2 d-flex align-items-center">
+      <div class="border rounded-2 bg-light">
+        <a class="link-offset-2 link-underline link-underline-opacity-0 m-2" routerLink="/main">Return to Home</a>
+      </div>
+      
+    </div>
+    <div class="col"></div>
+    <div class="col-2 d-flex justify-content-end py-3">
+      <div class="border border-light bg-success rounded-3 d-flex justify-content-center align-items-center">
+        <p class="text-light m-2">{{playerName}}</p>
+      </div>
+    </div>
+    <div class="col-1">
+      <div class="border-start">
+        <button type="button" (click)="logout()" class="btn btn-success m-4">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row bg-primary">
+    <div class="col">
+      <h6 class="display-6 text-light">Item Store</h6>
+    </div>
+    <div class="col"></div>
+    <div class="col-1 d-flex justify-content-center align-items-center">
+      <div class="border rounded-3 bg-light my-3 d-flex align-items-center">
+        <p class="text-dark d-flex justify-content-center m-2">{{currBal}}</p>
+      </div>
+    </div>
+    <div class="col-1">
+      <button *ngIf="!processing" class="btn btn-success my-3" (click)="startCheckout()">
+        Cart
+        <span class="badge text-bg-secondary">{{betterCurrCart.length}}</span>
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="!checkout" class="row my-3">
+    <div class="col-3"></div>
+
+    <div id="itemcat" class="col">
+      <nav>
+        <div class="nav nav-tabs" role="tablist">
+          <button id="weapon-tab" class="nav-link" role="tab" (click)="changeCategory('weapon')" data-bs-toggle="tab" type="button">Weapons</button>
+          <button id="armor-tab" class="nav-link" role="tab" (click)="changeCategory('armor')" data-bs-toggle="tab" type="button">Armor</button>
+          <button id="medicine-tab" class="nav-link" role="tab" (click)="changeCategory('medicine')" data-bs-toggle="tab" type="button">Medicines</button>
+          <button id="cosmetics-tab" class="nav-link" role="tab" (click)="changeCategory('cosmetics')" data-bs-toggle="tab" type="button">Cosmetics</button>
+          <button id="limited-tab" class="nav-link" role="tab" (click)="changeCategory('limited')" data-bs-toggle="tab" type="button">Limited</button>
+        </div>
+      </nav>
+    </div>
+
+    <div class="col-3"></div>
+  </div>
+
+  <div *ngIf="!checkout && !processing" class="row">
+    <div class="col-3"></div>
+
+    <div class="col-6 bg-dark">
+
+      <div class="tab-content d-flex justify-content-center align-items-center" style="max-height: 65vh; overflow-y: scroll;">
+
+        <div *ngIf="currCategory == 'weapon'" id="weapon-content" style="position: relative;">
+          <div class="d-flex flex-wrap justify-content-start" style="max-height: 65vh; overflow-y: scroll;">
+            <div *ngFor="let weapon of weaponList; let i = index" class="d-flex flex-column m-3">
+              <img class="img-thumbnail" src={{weapon.imgLink}} alt="w-image" style="max-width: 15vw; " placement="top" ngbTooltip={{weapon.itemDesc}} />
+
+              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1 me-1"><p class="text-light d-flex align-items-center" placement="top"  style="max-width: 15vw;" ngbTooltip={{weapon.itemDesc}}>{{weapon.itemName}}</p></div>
+              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1 me-1"><p class="text-light d-flex align-items-center" style="max-width: 15vw;">{{weapon.itemPrice}}</p></div>
+              <div class="d-flex flex-row" style="max-height: 5vh; max-width: 15vw">
+                <input id="weap" name="weap" #weap type="number" class="form-control" min="0" max="99" style="width: 75%;" />
+                <button (click)="betterAddToCart(weapon.itemID, weap.value)" class="btn btn-warning" type="button" style="max-height:5vh; max-width: 5vh"><img class="img-fluid" src="https://www.clipartbest.com/cliparts/dTr/6a7/dTr6a7K8c.png" /></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="currCategory == 'armor'" id="armor-content">
+          <div class="d-flex flex-wrap justify-content-start">
+            <div *ngFor="let armor of armorList; let i = index" class="d-flex flex-column m-3">
+              <img class="img-thumbnail" src={{armor.imgLink}} alt="a-image" style="max-width: 15vw;" placement="top" ngbTooltip={{armor.itemDesc}}/>
+
+              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1 me-1"><p class="text-light d-flex align-items-center" placement="top" ngbTooltip={{armor.itemDesc}}>{{armor.itemName}}</p></div>
+              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1 me-1"><p class="text-light d-flex align-items-center">{{armor.itemPrice}}</p></div>
+              <div class="d-flex flex-row" style="max-height: 5vh; max-width: 15vw">
+                <input id="arm" name="arm" #arm type="number" class="form-control" min="0" max="99" style="width: 75%;" />
+                <button (click)="betterAddToCart(armor.itemID, arm.value)" class="btn btn-warning" type="button" style="max-width: 5vh"><img class="img-fluid" src="https://www.clipartbest.com/cliparts/dTr/6a7/dTr6a7K8c.png" /></button>
+              </div>
+            </div>
+          </div>
+         </div>
+
+
+        <div *ngIf="currCategory == 'medicine'" id="medicine-content">
+          <div class="d-flex flex-wrap justify-content-start">
+            <div *ngFor="let medicine of medicineList; let i = index" class="d-flex flex-column m-3">
+              <img class="img-thumbnail" src={{medicine.imgLink}} alt="m-image" style="max-width: 15vw;" placement="top" ngbTooltip={{medicine.itemDesc}}/>
+
+              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1 me-1"><p class="text-light d-flex align-items-center" placement="top" ngbTooltip={{medicine.itemDesc}}>{{medicine.itemName}}</p></div>
+              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1 me-1"><p class="text-light d-flex align-items-center">{{medicine.itemPrice}}</p></div>
+              <div class="d-flex flex-row" style="max-height: 5vh; max-width: 15vw">
+                <input id="med" name="med" #med type="number" class="form-control" min="0" max="99" style="width: 75%;"/>
+                <button (click)="betterAddToCart(medicine.itemID, med.value)" class="btn btn-warning" type="button" style="max-width: 5vh"><img class="img-fluid" src="https://www.clipartbest.com/cliparts/dTr/6a7/dTr6a7K8c.png" /></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="currCategory == 'cosmetics'" id="cosmetics-content">
+          <div class="d-flex flex-wrap justify-content-start">
+            <div *ngFor="let cosmetic of cosmeticList; let i = index" class="d-flex flex-column m-3">
+              <img class="img-thumbnail" src={{cosmetic.imgLink}} alt="c-image" style="max-width: 15vw;" placement="top" ngbTooltip={{cosmetic.itemDesc}}/>
+
+              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1 me-1"><p class="text-light d-flex align-items-center" placement="top" ngbTooltip={{cosmetic.itemDesc}}>{{cosmetic.itemName}}</p></div>
+              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1 me-1"><p class="text-light d-flex align-items-center">{{cosmetic.itemPrice}}</p></div>
+              <div class="d-flex flex-row" style="max-height: 5vh; max-width: 15vw">
+                <input id="cos" name="cos" #cos type="number" class="form-control" min="0" max="99" style="width: 75%;" />
+                <button (click)="betterAddToCart(cosmetic.itemID, cos.value)" class="btn btn-warning" type="button" style="max-width: 5vh"><img class="img-fluid" src="https://www.clipartbest.com/cliparts/dTr/6a7/dTr6a7K8c.png" /></button>
+              </div>
+            </div>
+        </div>
+        </div>
+
+        <div *ngIf="currCategory == 'limited'" id="limited-content">
+          <div class="d-flex flex-wrap justify-content-start">
+            <div *ngFor="let limited of limitedList; let i = index" class="d-flex flex-column m-3">
+              <img class="img-thumbnail" src={{limited.imgLink}} alt="l-image" style="max-width: 15vw;" placement="top" ngbTooltip={{limited.itemDesc}}/>
+
+              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1 me-1"><p class="text-light d-flex align-items-center" placement="top" ngbTooltip={{limited.itemDesc}}>{{limited.itemName}}</p></div>
+              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1 me-1"><p class="text-light d-flex align-items-center">{{limited.itemPrice}}</p></div>
+              <div class="d-flex flex-row" style="max-height: 5vh; max-width: 15vw">
+                <input id="lim" name="lim" #lim type="number" class="form-control" min="0" max="99" style="width: 75%;" />
+                <button (click)="betterAddToCart(limited.itemID, lim.value)" class="btn btn-warning" type="button" style="max-height:5vh; max-width: 5vh"><img class="img-fluid" src="https://www.clipartbest.com/cliparts/dTr/6a7/dTr6a7K8c.png" /></button>
+              </div>
+            </div>
+        </div>
+      </div>
+
+    </div>
+    </div>
+
+    <div class="col-3"></div>
+  </div>
+
+  <div *ngIf="checkout && !processing" class="row my-3">
+    <div class="col-3"></div>
+
+    <div class="col d-flex flex-column justify-content-center">
+
+      <h5 class="display-5">My Cart</h5>
+
+      <div *ngIf="betterCurrCart.length == 0"><p>Looks like you don't have any items in your cart... yet.</p></div>
+
+      <div *ngIf="betterCurrCart.length > 0" class="my-2">
+        <div *ngFor="let item of betterCurrCart; let i = index" class="d-flex flex-column">
+          <img class="img-thumbnail" src={{item.imgLink}} alt="item-img" style="max-width: 15vw;"/>
+          <div><p>{{item.itemName}}</p></div>
+          <div><p>{{item.itemPrice}}</p></div>
+          <div class="d-flex flex-row"> <p class="mx-2">Quantity: {{item.quantity}}</p> <button class="btn btn-danger" (click)="removeFromCart(item.itemID)">Remove</button></div>
+        </div>
+      </div>
+
+      <div *ngIf="betterCurrCart.length > 0" class="my-2">
+        <div class="border rounded-3">
+          <p>Total: {{totalCost}}</p>
+        </div>
+      </div>
+
+      <button *ngIf="betterCurrCart.length > 0" class="btn btn-success my-3" style="max-width: 15vw;" type="button" (click)="betterPurchaseItems()">Order</button>
+
+    </div>
+
+    <div class="col-3"></div>
+  </div>
+
+</div>

@@ -1,0 +1,28 @@
+<div class="container-fluid">
+  <div class="row bg-dark">
+    <div class="col-2 d-flex align-items-center">
+      <a class="link-offset-2 link-underline link-underline-opacity-0 m-3" routerLink="/main">Return to Home</a>
+    </div>
+    <div class="col-7"></div>
+    <div class="col-2 d-flex justify-content-center py-3">
+      <div class="border border-light bg-success rounded-3 d-flex justify-content-center align-items-center">
+        <p class="text-light m-2">{{playerName}}</p>
+      </div>
+    </div>
+    <div class="col-1">
+      <button type="button" (click)="logout()" class="btn btn-success my-4">Logout</button>
+    </div>
+  </div>
+
+  <div class="row bg-secondary">
+    <div class="col">
+      <h6 class="display-6 text-light">Inventory</h6>
+    </div>
+    <div class="col"></div>
+    <div class="col-1"></div>
+  </div>
+
+  <div class="row">
+
+  </div>
+</div>

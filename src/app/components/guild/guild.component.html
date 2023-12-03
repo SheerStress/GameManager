@@ -1,0 +1,141 @@
+<div class="container-fluid">
+
+  <div class="row bg-dark">
+    <div class="col-2 d-flex align-items-center">
+      <div class="border rounded-2 bg-light">
+        <a class="link-offset-2 link-underline link-underline-opacity-0 m-2" routerLink="/main">Return to Home</a>
+      </div>
+
+    </div>
+    <div class="col"></div>
+    <div class="col-2 d-flex justify-content-end py-3">
+      <div class="border border-light bg-success rounded-3 d-flex justify-content-center align-items-center">
+        <p class="text-light m-2">{{playerName}}</p>
+      </div>
+    </div>
+    <div class="col-1">
+      <div class="border-start">
+        <button type="button" (click)="logout()" class="btn btn-success m-4">Logout</button>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row bg-success">
+    <div class="col"><h6 class="display-6 text-light">{{guildName}}</h6></div>
+    <div class="col"></div>
+    <div class="col-1 d-flex justify-content-center align-items-center">
+      <button class="btn btn-warning" *ngIf="!isLeader && !confirmation" (click)="confirmation = true;">Withdraw</button>
+      <button class="btn btn-danger" *ngIf="isLeader && !confirmation" (click)="confirmation = true;">Disband</button>
+    </div>
+  </div>
+
+  <div *ngIf="confirmation" class="row my-2 bg-danger">
+    <div class="col-4"></div>
+    <div class="col">
+      <p class="text-warning" *ngIf="!isLeader && confirmation">Are you sure you want to withdraw?</p>
+      <p class="text-warning" *ngIf="isLeader && confirmation">Are you sure you want to disband?</p>
+    </div>
+    <div class="col-4"></div>
+  </div>
+
+  <div *ngIf="confirmation" class="row">
+    <div class="col-5"></div>
+    <div class="col-1 bg-secondary">
+      <button class="btn btn-danger mx-3" *ngIf="!isLeader && confirmation" (click)="withdraw()">Yes</button>
+      <button class="btn btn-danger mx-3" *ngIf="isLeader && confirmation" (click)="disbandGuild()">Yes</button>
+    </div>
+    <div class="col-1 bg-secondary">
+      <button class="btn btn-success" (click)="confirmation = false;">No</button>
+    </div>
+    <div class="col-5"></div>
+  </div>
+
+  <div *ngIf="isLeader" class="row my-3">
+    <div class="col-4"></div>
+    <div class="col">
+      <div>
+        <h6>Pending Requests</h6>
+      </div>
+      <div class="border rounded-3">
+        <table class="table table-bordered border-light">
+          <thead>
+            <tr>
+              <th class="bg-success text-light">ID</th>
+              <th class="bg-success text-light">Username</th>
+              <th class="bg-success text-light"></th>
+              <th class="bg-success text-light"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let request of guildRequests; let i = index">
+              <td class="bg-secondary">{{request.playerID}}</td>
+              <td class="bg-secondary">{{request.username}}</td>
+              <td class="bg-dark"><button class="btn btn-success" type="button" (click)="acceptRequest(i)">Accept</button></td>
+              <td class="bg-dark"><button class="btn btn-danger" type="button" (click)="rejectRequest(i)">Reject</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+    <div class="col-4"></div>
+  </div>
+
+  <div class="row my-3">
+    <div class="col"></div>
+
+    <div class="col-2 d-flex flex-wrap justify-content-center bg-secondary">
+      <h4 class="display-4 text-light m-3">Members</h4>
+      <ul class="list-group" *ngIf="(guildMembers.length >= 1)">
+        <li class="list-group-item text-light" *ngFor="let member of guildMembers">{{member}}</li>
+      </ul>
+      <p class="text-light" *ngIf="(guildMembers.length == 0)">{{altMessage}}</p>
+    </div>
+
+    <div class="col-3">
+
+      <h4 class="display-4 m-3">Messages</h4>
+
+      <div id="message-border" class="border-light rounded-3">
+        <table *ngIf="(guildMessages.length >= 1)" class="table table-bordered border-light">
+          <thead>
+            <tr>
+              <th class="bg-success text-light">Username</th>
+              <th class="bg-success text-light">Content</th>
+              <th class="bg-success text-light">Time</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let message of guildMessages">
+              <td class="bg-dark text-light">{{message.username}}</td>
+              <td class="bg-dark text-light">{{message.messageContent}}</td>
+              <td class="bg-dark text-light">{{message.dateCreated}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p *ngIf="(guildMessages.length == 0)" class="m-3 text-light">No Messages</p>
+
+      <form id="message-form" [formGroup]="form" (ngSubmit)="sendMessage()">
+        <div class="form-group">
+          <input type="text" [(ngModel)]="newMessage"
+                 formControlName="message"
+                 [ngClass]="{ 'is-invalid': sent && f['message'].errors }"
+                 placeholder="Write your message here!" />
+          <button type="submit" class="btn btn-secondary ms-1">Send</button>
+        </div>
+        <div *ngIf="sent && f['message'].errors">
+          <p class="text-danger" *ngIf="sent && f['message'].errors['required']">Must type a message to send</p>
+          <p class="text-danger" *ngIf="sent && f['message'].errors['maxLength']">Message must not exceed 255 characters</p>
+        </div>
+      </form>
+
+
+    </div>
+
+    <div class="col"></div>
+  </div>
+</div>
