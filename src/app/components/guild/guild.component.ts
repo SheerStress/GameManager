@@ -31,21 +31,29 @@ export class GuildComponent implements OnInit {
 
   playerName: string;
   guildName: string;
+  guildGreeting: string;
+
   guildMembers: Array<string>;
   guildMessages: Array<GuildMessage>;
   guildRequests: Array<GuildRequest>;
+
   altMessage: string;
   altMembers: string;
   isLeader: boolean;
   isMember: boolean;
+
   newMessage: string;
+
   form: FormGroup;
   sent: boolean;
   confirmation: boolean;
 
   constructor(private router: Router, private formBuilder: FormBuilder, private guildData: GuildDataService, private playerData: PlayerDataService, private itemData: ItemDataService) {
+
     this.playerName = "";
     this.guildName = "";
+    this.guildGreeting = this.guildData.getData().guild.guildGreeting;
+
     this.guildMembers = [];
     this.guildMessages = [{
       username: <string>"",
@@ -66,6 +74,9 @@ export class GuildComponent implements OnInit {
   };
 
   ngOnInit() {
+
+    let validToken = this.playerData.verifyToken();
+    console.log(validToken);
 
     this.playerName = this.playerData.getData().username;
     console.log("guild page initialized");
@@ -101,7 +112,8 @@ export class GuildComponent implements OnInit {
     .subscribe(response => {
       if (response.data) {
         for (let i=0; i<response.data.length; i++) {
-          this.guildMembers.push(response.data[i].username);
+          this.guildMembers.push(response.data[i]);
+          console.log("member " + (i + 1) + ": " + response.data[i]);
         };
         if (this.guildMembers.length == 0) {
           this.altMessage = "Looks like you don't have any members... yet.";

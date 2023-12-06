@@ -1,1 +1,151 @@
-<p>settings works!</p>
+<div class="container-fluid">
+
+  <div class="row bg-dark">
+    <div class="col-2 d-flex align-items-center">
+      <div class="border rounded-2 bg-light">
+        <a class="link-offset-2 link-underline link-underline-opacity-0 m-2" routerLink="/main">Return to Home</a>
+      </div>
+
+    </div>
+    <div class="col"></div>
+    <div class="col-2 d-flex justify-content-end py-3">
+      <div class="border border-light bg-success rounded-3 d-flex justify-content-center align-items-center">
+        <p class="text-light m-2">{{playerName}}</p>
+      </div>
+    </div>
+
+    <div class="col-1 py-2">
+      <div class="d-flex justify-content-center align-items-center" style="height: 100%">
+        <button type="button" (click)="logout()" class="btn btn-light m-2" style="max-width: 100%; max-height: 100%;"><img class="img-fluid" src="assets/icons/logout-1.png" /></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row bg-secondary">
+    <div class="col">
+      <h6 class="display-6 text-light">Account Settings</h6>
+    </div>
+    <div class="col"></div>
+    <div class="col-1"></div>
+  </div>
+
+  <div class="row" *ngIf="!changingUsername && !changingPassword && !changingPhone" >
+
+    <div class="col-4"></div>
+
+    <div class="col d-flex flex-column justify-content-center align-items-center">
+
+      <div class="d-flex justify-content-center my-3">
+        <p>What account information would you like to change?</p>
+      </div>
+      <div class="my-3"><button class="btn btn-primary" (click)="setUsername()">Change Username</button></div>
+      <div class="my-3"><button class="btn btn-primary" (click)="setPassword()">Change Password</button></div>
+      <div class="my-3"><button class="btn btn-primary" (click)="setPhone()">Change Phone Number</button></div>
+    </div>
+
+    <div class="col-4"></div>
+
+  </div>
+
+  <div class="row" *ngIf="changingUsername">
+    <div class="col-4"></div>
+    <div class="col d-flex flex-column justify-content-start">
+
+      <div style="max-width: 5vw;"><button class="btn btn-primary my-3" (click)="cancel()">Back</button></div>
+
+      <form class="d-flex flex-column" [formGroup]="usernameForm" (ngSubmit)="updateUsername()">
+        <label>Choose a new username: </label>
+
+        <input type="text" [(ngModel)]="newUsername" class="me-1" style="width: 66%;"
+               formControlName="username"
+               [ngClass]="{ 'is-invalid': sent && getUser['username'].errors }"
+               placeholder="Enter your new username" />
+        <button type="submit" class="btn btn-success my-2" style="max-width: 100%">Change</button>
+
+        <div *ngIf="sent && getUser['username'].errors">
+          <p class="text-danger" *ngIf="sent && getUser['username'].errors['required']">Must provide a new username (2-16 characters)</p>
+          <p class="text-danger" *ngIf="sent && getUser['username'].errors['maxLength']">Username must not exceed 16 characters</p>
+          <p class="text-danger" *ngIf="sent && getUser['username'].errors['minLength']">Username must be at least 2 characters</p>
+        </div>
+      </form>
+
+      <p class="text-warning my-2">*You will be logged out after updating your username.</p>
+    </div>
+    <div class="col-4"></div>
+  </div>
+
+
+  <div class="row" *ngIf="changingPassword">
+    <div class="col-3"></div>
+
+    <div class="col d-flex flex-column justify-content-start flex-wrap">
+
+      <div style="max-width: 5vw;"><button class="btn btn-primary my-3" (click)="cancel()">Back</button></div>
+
+      <form class="d-flex flex-column" [formGroup]="passwordForm" (ngSubmit)="updatePassword()">
+
+        <label class="my-3">Enter your current password: </label>
+        <input type="password" [(ngModel)]="oldPassword" class="me-1" style="width: 66%;"
+               formControlName="old_password"
+               [ngClass]="{ 'is-invalid': sent && getPass['old_password'].errors }"
+               placeholder="Enter your old password" />
+
+        <label class="my-3">Choose a new password: </label>
+        <input type="password" [(ngModel)]="newPassword" class="me-1" style="width: 66%;"
+               formControlName="password"
+               [ngClass]="{ 'is-invalid': sent && getPass['password'].errors }"
+               placeholder="Enter your new password" />
+
+        <button type="submit" class="btn btn-success my-2" style="max-width: 100%">Change</button>
+
+        <div *ngIf="sent && getPass['password'].errors">
+          <p class="text-danger" *ngIf="sent && getPass['password'].errors['required']">Must provide a new password (8-32 characters)</p>
+          <p class="text-danger" *ngIf="sent && getPass['password'].errors['maxLength']">Password must not exceed 32 characters</p>
+          <p class="text-danger" *ngIf="sent && getPass['password'].errors['minLength']">Password must be at least 8 characters</p>
+        </div>
+
+        <div *ngIf="sent && getPass['old_password'].errors">
+          <p class="text-danger" *ngIf="sent && getPass['old_password'].errors['required']">Must provide your current password.</p>
+          <p class="text-danger" *ngIf="sent && getPass['old_password'].errors['maxLength']">Password does not exceed 32 characters.</p>
+          <p class="text-danger" *ngIf="sent && getPass['old_password'].errors['minLength']">Password is at least 8 characters.</p>
+        </div>
+      </form>
+
+      <p class="text-warning my-2">*You will be logged out after updating your password.</p>
+    </div>
+
+    <div class="col-3"></div>
+  </div>
+
+
+  <div class="row" *ngIf="changingPhone">
+    <div class="col-4"></div>
+
+    <div class="col d-flex flex-column justify-content-start">
+
+      <div style="max-width: 5vw;"><button class="btn btn-primary my-3" (click)="cancel()">Back</button></div>
+
+      <form class="d-flex flex-column" [formGroup]="phoneForm" (ngSubmit)="updatePhone()">
+
+        <label>Provide a new phone number to link to your account:</label>
+        <input type="text" [(ngModel)]="newPhone" class="me-1" style="width: 66%;"
+               formControlName="phone"
+               [ngClass]="{ 'is-invalid': sent && getPhone['phone'].errors }"
+               placeholder="Enter your new phone number" />
+        <button type="submit" class="btn btn-success my-2" style="max-width: 100%">Change</button>
+
+        <div *ngIf="sent && getPhone['phone'].errors">
+          <p class="text-danger" *ngIf="sent && getPhone['phone'].errors['required']">Must provide a new phone number (10-13 digits - no separators)</p>
+          <p class="text-danger" *ngIf="sent && getPhone['phone'].errors['maxLength']">Phone number should not exceed 13 characters</p>
+          <p class="text-danger" *ngIf="sent && getPhone['phone'].errors['minLength']">Phone number should be at least 10 digits</p>
+        </div>
+      </form>
+
+    </div>
+
+    <div class="col-4"></div>
+  </div>
+
+
+
+</div>

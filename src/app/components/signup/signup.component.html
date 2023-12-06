@@ -1,83 +1,93 @@
 
 <div class="container-fluid">
 
-  <div class="row">
-    <div class="col"></div>
-    <div class="col d-flex justify-content-center align-items-center">
-      <h6 class="display-6 my-3">New Registration</h6>
+  <div class="row bg-dark" style="height: 10vh;">
+
+    <div class="col-3 d-flex align-items-center">
+      <div class="border rounded-2 bg-light">
+        <a class="link-offset-2 link-underline link-underline-opacity-0 m-2" routerLink="/">Return to Login</a>
+      </div>
     </div>
-    <div class="col"></div>
-  </div>
 
-  <div class="row">
-    <div class="col"></div>
-    <div class="col-6 bg-secondary d-flex justify-content-center flex-wrap">
-
-      <div class="border rounded-2 bg-dark p-3 m-3">
-        <form id="signup-form" [formGroup]="form" (ngSubmit)="register()">
-          <div class="form-group my-3">
-            <label for="email-input" class="text-light">Enter your email</label>
-            <input id="email-input" type="email" [(ngModel)]="email"
-                   [ngClass]="" class="form-control"
-                   formControlName="email" placeholder="Enter your email address" />
-            <div *ngIf="submitted && f['email'].errors">
-              <p class="text-danger" *ngIf="submitted && f['email'].errors['required']">Email is required</p>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="pass-input" class="text-light">Enter your new password</label>
-            <input id="pass-input" type="password" [(ngModel)]="pass"
-                   [ngClass]="" class="form-control"
-                   formControlName="pass" placeholder="Enter your password" />
-            <div *ngIf="submitted && f['pass'].errors">
-              <p class="text-danger" *ngIf="submitted && f['pass'].errors['required']">Password is required</p>
-              <p class="text-danger" *ngIf="submitted">Password must be at least 8 characters</p>
-            </div>
-          </div>
-          <div class="form-group my-3">
-            <label for="pass-confirm" class="text-light">Confirm your new password: </label>
-            <input id="pass-confirm" type="password" [(ngModel)]="passConfirm"
-                   [ngClass]="" class="form-control"
-                   formControlName="passConfirm" placeholder="Confirm your password" />
-            <div *ngIf="submitted && f['passConfirm'].errors">
-              <p class="text-danger" *ngIf="submitted && f['passConfirm'].errors['required']">Password confirmation is required</p>
-              <p class="text-danger" *ngIf="submitted">Password does not match</p>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="username-input" class="text-light">Enter your player username</label>
-            <input id="username-input" type="text" [(ngModel)]="username"
-                   [ngClass]="" class="form-control"
-                   formControlName="username" placeholder="Enter your display name" />
-            <div *ngIf="submitted && f['username'].errors">
-              <p class="text-danger" *ngIf="submitted && f['username'].errors['required']">Username is required</p>
-              <p class="text-danger" *ngIf="submitted">Username must be between 1 and 16 characters</p>
-            </div>
-          </div>
-          <div class="form-group my-3">
-            <label for="phone-input" class="text-light">Enter your phone number</label>
-            <input id="phone-input" type="text" [(ngModel)]="phoneNum"
-                   [ngClass]="" class="form-control"
-                   formControlName="phoneNum" placeholder="Enter your phone number" />
-            <div *ngIf="submitted && f['phoneNum'].errors">
-              <p class="text-danger" *ngIf="submitted && f['phoneNum'].errors['required']">Phone number must be submitted</p>
-              <p class="text-danger" *ngIf="submitted">Phone number must be between 11 and 12 characters</p>
-            </div>
-          </div>
-        </form>
+      <div class="col d-flex justify-content-center align-items-center">
+        <h6 class="display-6 my-3 text-light">New Registration</h6>
       </div>
 
+    <div class="col-3"></div>
 
-    </div>
-    <div class="col"></div>
   </div>
 
-  <div class="row my-3">
-    <div class="col"></div>
-    <div class="col d-flex justify-content-center">
-      <button type="submit" form="signup-form" class="btn btn-success">Register</button>
-    </div>
-    <div class="col"></div>
-  </div>
+    <div class="row" style="height: 75vh;">
+      <div class="col"></div>
 
-</div>
+      <div class="col-8 d-flex justify-content-center flex-wrap">
+
+        <div class="border rounded-2 bg-dark p-3 m-3">
+          <form id="signup-form" [formGroup]="form" (ngSubmit)="register()">
+            <div class="form-group my-3">
+              <label for="email-input" class="text-light">Enter your email</label>
+              <input id="email-input" type="email" [(ngModel)]="email"
+                     [ngClass]="" class="form-control"
+                     formControlName="email" placeholder="Enter your email address" />
+              <div *ngIf="submitted && f['email'].errors">
+                <p class="text-danger" *ngIf="submitted && f['email'].errors['required']">Email is required</p>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="pass-input" class="text-light">Enter your new password</label>
+              <input id="pass-input" type="password" [(ngModel)]="pass"
+                     [ngClass]="" class="form-control"
+                     formControlName="pass" placeholder="Enter your password" />
+              <div *ngIf="submitted && f['pass'].errors">
+                <p class="text-danger" *ngIf="submitted && f['pass'].errors['required']">Password is required</p>
+                <p class="text-danger" *ngIf="submitted">Password must be at least 8 characters</p>
+              </div>
+            </div>
+            <div class="form-group my-3">
+              <label for="pass-confirm" class="text-light">Confirm your new password: </label>
+              <input id="pass-confirm" type="password" [(ngModel)]="passConfirm"
+                     [ngClass]="" class="form-control"
+                     formControlName="passConfirm" placeholder="Confirm your password" />
+              <div *ngIf="submitted && f['passConfirm'].errors">
+                <p class="text-danger" *ngIf="submitted && f['passConfirm'].errors['required']">Password confirmation is required</p>
+                <p class="text-danger" *ngIf="submitted">Password does not match</p>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="username-input" class="text-light">Enter your player username</label>
+              <input id="username-input" type="text" [(ngModel)]="username"
+                     [ngClass]="" class="form-control"
+                     formControlName="username" placeholder="Enter your display name" />
+              <div *ngIf="submitted && f['username'].errors">
+                <p class="text-danger" *ngIf="submitted && f['username'].errors['required']">Username is required</p>
+                <p class="text-danger" *ngIf="submitted">Username must be between 1 and 16 characters</p>
+              </div>
+            </div>
+            <div class="form-group my-3">
+              <label for="phone-input" class="text-light">Enter your phone number</label>
+              <input id="phone-input" type="text" [(ngModel)]="phoneNum"
+                     [ngClass]="" class="form-control"
+                     formControlName="phoneNum" placeholder="Enter your phone number" />
+              <div *ngIf="submitted && f['phoneNum'].errors">
+                <p class="text-danger" *ngIf="submitted && f['phoneNum'].errors['required']">Phone number must be submitted</p>
+                <p class="text-danger" *ngIf="submitted">Phone number must be between 11 and 12 characters</p>
+              </div>
+            </div>
+          </form>
+        </div>
+
+
+      </div>
+
+      <div class="col"></div>
+    </div>
+
+    <div class="row" style="height: 10vh;">
+      <div class="col"></div>
+      <div class="col-8 d-flex justify-content-center">
+        <button type="submit" form="signup-form" class="btn btn-primary my-3">Register</button>
+      </div>
+      <div class="col"></div>
+    </div>
+
+  </div>

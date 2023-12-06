@@ -13,17 +13,19 @@
         <p class="text-light m-2">{{playerName}}</p>
       </div>
     </div>
-    <div class="col-1">
-      <div class="border-start">
-        <button type="button" (click)="logout()" class="btn btn-success m-4">Logout</button>
+
+    <div class="col-1 py-2">
+      <div class="d-flex justify-content-center align-items-center" style="height: 100%">
+        <button type="button" (click)="logout()" class="btn btn-light m-2" style="max-width: 100%; max-height: 100%;"><img class="img-fluid" src="assets/icons/logout-1.png" /></button>
       </div>
     </div>
+
   </div>
 
 
   <div class="row bg-success">
     <div class="col"><h6 class="display-6 text-light">{{guildName}}</h6></div>
-    <div class="col"></div>
+    <div class="col"><p class="text-light m-1">{{guildGreeting}}</p></div>
     <div class="col-1 d-flex justify-content-center align-items-center">
       <button class="btn btn-warning" *ngIf="!isLeader && !confirmation" (click)="confirmation = true;">Withdraw</button>
       <button class="btn btn-danger" *ngIf="isLeader && !confirmation" (click)="confirmation = true;">Disband</button>
@@ -33,25 +35,30 @@
   <div *ngIf="confirmation" class="row my-2 bg-danger">
     <div class="col-4"></div>
     <div class="col">
-      <p class="text-warning" *ngIf="!isLeader && confirmation">Are you sure you want to withdraw?</p>
-      <p class="text-warning" *ngIf="isLeader && confirmation">Are you sure you want to disband?</p>
+      <p class="text-warning d-flex justify-content-center" *ngIf="!isLeader && confirmation">Are you sure you want to withdraw?</p>
+      <p class="text-warning d-flex justify-content-center" *ngIf="isLeader && confirmation">Are you sure you want to disband?</p>
     </div>
     <div class="col-4"></div>
   </div>
 
   <div *ngIf="confirmation" class="row">
     <div class="col-5"></div>
-    <div class="col-1 bg-secondary">
-      <button class="btn btn-danger mx-3" *ngIf="!isLeader && confirmation" (click)="withdraw()">Yes</button>
-      <button class="btn btn-danger mx-3" *ngIf="isLeader && confirmation" (click)="disbandGuild()">Yes</button>
+    <div class="col-2">
+      <div class="border rounded-2 bg-secondary d-flex flex-row justify-content-center">
+        <div class="m-3">
+          <button class="btn btn-danger" *ngIf="!isLeader && confirmation" (click)="withdraw()">Yes</button>
+          <button class="btn btn-danger" *ngIf="isLeader && confirmation" (click)="disbandGuild()">Yes</button>
+        </div>
+        <div class="m-3">
+          <button class="btn btn-success" (click)="confirmation = false;">No</button>
+        </div>
+      </div>
     </div>
-    <div class="col-1 bg-secondary">
-      <button class="btn btn-success" (click)="confirmation = false;">No</button>
-    </div>
+
     <div class="col-5"></div>
   </div>
 
-  <div *ngIf="isLeader" class="row my-3">
+  <div *ngIf="isLeader && guildRequests.length > 0" class="row my-3">
     <div class="col-4"></div>
     <div class="col">
       <div>
@@ -82,23 +89,31 @@
     <div class="col-4"></div>
   </div>
 
-  <div class="row my-3">
-    <div class="col"></div>
+  <div class="row my-3" style="max-height: 60vh; max-width: inherit; overflow-y: scroll;">
 
-    <div class="col-2 d-flex flex-wrap justify-content-center bg-secondary">
-      <h4 class="display-4 text-light m-3">Members</h4>
+    <div class="col bg-secondary"></div>
+
+    <div class="col-2 d-flex flex-column justify-content-start align-items-center bg-secondary">
+  
+        <h5 class="text-light display-5 m-3 p-3 bg-secondary d-flex justify-content-center align-items-center" style="width: 100%; position: sticky; top: 0px; z-index:4;">Members</h5>
+   
       <ul class="list-group" *ngIf="(guildMembers.length >= 1)">
-        <li class="list-group-item text-light" *ngFor="let member of guildMembers">{{member}}</li>
+        <li class="list-group-item my-3" *ngFor="let member of guildMembers">{{member}}</li>
       </ul>
+
       <p class="text-light" *ngIf="(guildMembers.length == 0)">{{altMessage}}</p>
+
     </div>
 
-    <div class="col-3">
+    <div class="col-7 d-flex flex-column justify-content-center">
 
-      <h4 class="display-4 m-3">Messages</h4>
+      <div class="border rounded-2 bg-light ms-4" style="width: 100%; position: sticky; top: 0px">
+        <h5 class="display-5 m-3 bg-light d-flex justify-content-center align-items-center" style="max-width: 100%;">Messages</h5>
+      </div>
 
-      <div id="message-border" class="border-light rounded-3">
-        <table *ngIf="(guildMessages.length >= 1)" class="table table-bordered border-light">
+
+      <div id="message-border" class="border-light rounded-3 ms-4">
+        <table *ngIf="(guildMessages.length >= 1)" class="table table-bordered border-light ms-3" style="max-width: 100%;">
           <thead>
             <tr>
               <th class="bg-success text-light">Username</th>
@@ -119,23 +134,27 @@
 
       <p *ngIf="(guildMessages.length == 0)" class="m-3 text-light">No Messages</p>
 
-      <form id="message-form" [formGroup]="form" (ngSubmit)="sendMessage()">
-        <div class="form-group">
-          <input type="text" [(ngModel)]="newMessage"
-                 formControlName="message"
-                 [ngClass]="{ 'is-invalid': sent && f['message'].errors }"
-                 placeholder="Write your message here!" />
-          <button type="submit" class="btn btn-secondary ms-1">Send</button>
-        </div>
-        <div *ngIf="sent && f['message'].errors">
-          <p class="text-danger" *ngIf="sent && f['message'].errors['required']">Must type a message to send</p>
-          <p class="text-danger" *ngIf="sent && f['message'].errors['maxLength']">Message must not exceed 255 characters</p>
-        </div>
-      </form>
+      <div class="ms-4 border rounded-2 bg-light" style="width: 100%; position: sticky; bottom: 0px;">
+        <form id="message-form" class="m-2 bg-light d-flex justify-content-center align-items-center" [formGroup]="form" (ngSubmit)="sendMessage()" style="max-width: 100%;">
+          <div class="form-group d-flex flex-row align-items-center justify-content-center" style="width: 100%;">
+            <input type="text" [(ngModel)]="newMessage" class="me-1" style="width: 66%;"
+                   formControlName="message"
+                   [ngClass]="{ 'is-invalid': sent && f['message'].errors }"
+                   placeholder="Write your message here!" />
+            <button type="submit" class="btn btn-secondary ms-1" style="max-width: 25%">Send</button>
+          </div>
+          <div *ngIf="sent && f['message'].errors">
+            <p class="text-danger" *ngIf="sent && f['message'].errors['required']">Must type a message to send</p>
+            <p class="text-danger" *ngIf="sent && f['message'].errors['maxLength']">Message must not exceed 255 characters</p>
+          </div>
+        </form>
+      </div>
+
 
 
     </div>
 
     <div class="col"></div>
   </div>
+
 </div>

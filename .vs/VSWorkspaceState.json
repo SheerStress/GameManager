@@ -1,12 +1,7 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\src",
-    "\\src\\app",
-    "\\src\\app\\components",
-    "\\src\\app\\components\\itemstore",
-    "\\src\\app\\router"
+    ""
   ],
-  "SelectedNode": "\\src\\app\\components\\itemstore\\itemstore.component.ts",
+  "SelectedNode": "\\C:\\MAMP\\htdocs\\CS602_FinalProject_Angular\\GameManager",
   "PreviewInSolutionExplorer": false
 }

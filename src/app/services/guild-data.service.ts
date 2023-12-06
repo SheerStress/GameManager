@@ -59,6 +59,10 @@ export class GuildDataService {
     };
   }
 
+  getData() {
+    return this.currGuild;
+  }
+
   createGuild(id: number, name: string, welcome: string, greet: string): Observable<any> {
     let url = `http://localhost:3000/createGuild`;
     let newData = {

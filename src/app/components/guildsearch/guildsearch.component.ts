@@ -84,6 +84,7 @@ export class GuildsearchComponent implements OnInit {
         if (response.status == 200) {
           this.waiting = true;
           console.log("successful application");
+          this.findPending();
         } else {
           console.log(response.error);
         }

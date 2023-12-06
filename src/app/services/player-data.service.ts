@@ -132,6 +132,37 @@ export class PlayerDataService {
     console.log(this.http.post(url, inputData));
     this.verifyToken();
     return this.http.post(url, inputData);
+  };
+
+  updateUsername(inputName: string): Observable<any> {
+    let url: string = `http://localhost:3000/updateUsername`;
+    let newData = {
+      playerID: this.currPlayer.playerID,
+      newUsername: inputName
+    };
+
+    return this.http.post(url, newData);
+  };
+
+  updatePassword(existingPass: string, inputPass: string): Observable<any> {
+    let url: string = `http://localhost:3000/updatePassword`;
+    let newData = {
+      playerID: this.currPlayer.playerID,
+      oldPassword: existingPass,
+      newPassword: inputPass
+    };
+
+    return this.http.post(url, newData);
+  }
+
+  updatePhone(inputPhone: string): Observable<any> {
+    let url: string = `http://localhost:3000/updatePhone`;
+    let newData = {
+      playerID: this.currPlayer.playerID,
+      newPhone: inputPhone
+    };
+
+    return this.http.post(url, newData);
   }
 
 

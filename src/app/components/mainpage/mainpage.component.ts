@@ -28,7 +28,7 @@ export class MainpageComponent implements OnInit {
     console.log(validToken);
 
     this.playerName = this.playerdata.getData().username;
-    this.greeting = "What service do you need, " + this.playerdata.getData().username + "?"
+    this.greeting = "What service are you looking for, " + this.playerdata.getData().username + "?"
 
     this.guilddata.retrieveGuild(this.playerdata.getData().playerID)
     .subscribe(response => {

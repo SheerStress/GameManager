@@ -122,6 +122,12 @@ export class ItemstoreComponent implements OnInit {
 
   sortItems() {
 
+    this.weaponList = [];
+    this.armorList = [];
+    this.medicineList = [];
+    this.cosmeticList = [];
+    this.limitedList = [];
+
     for (let i = 0; i < this.allItems.length; i++) {
 
       if (this.allItems[i].itemType == "Weapon") {
@@ -237,6 +243,7 @@ export class ItemstoreComponent implements OnInit {
       this.itemData.betterSubmitOrder(this.playerData.getData().playerID)
         .subscribe(response => {
           if (response.status == 200) {
+            this.currBal -= this.betterCurrCart[this.betterCurrCart.length - 1].itemPrice;
             this.betterCurrCart.pop();
             this.itemData.betterSetCart(this.betterCurrCart);
             this.betterPurchaseItems();
@@ -253,6 +260,10 @@ export class ItemstoreComponent implements OnInit {
 
   startCheckout() {
     this.checkout = true;
+  };
+
+  storeRedirect() {
+    this.checkout = false;
   }
 
   betterUpdateSum() {

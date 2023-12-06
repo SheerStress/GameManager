@@ -13,9 +13,9 @@
         <p class="text-light m-2">{{playerName}}</p>
       </div>
     </div>
-    <div class="col-1">
-      <div class="border-start">
-        <button type="button" (click)="logout()" class="btn btn-success m-4">Logout</button>
+    <div class="col-1 py-2">
+      <div class="d-flex justify-content-center align-items-center" style="height: 100%">
+        <button type="button" (click)="logout()" class="btn btn-light m-2" style="max-width: 100%; max-height: 100%;"><img class="img-fluid" src="assets/icons/logout-1.png" /></button>
       </div>
     </div>
   </div>
@@ -26,8 +26,8 @@
       <h6 class="display-6 text-success">Guild Search</h6>
     </div>
     <div class="col"></div>
-    <div class="col-2 d-flex justify-content-center align-items-center">
-      <button class="btn btn-success" routerLink="/gcreate">Create Guild</button>
+    <div class="col-2 d-flex justify-content-end align-items-center">
+      <button class="btn btn-success me-2" routerLink="/gcreate">Create</button>
     </div>
   </div>
 

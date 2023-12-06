@@ -1,17 +1,25 @@
 <div class="container-fluid">
+
   <div class="row bg-dark">
     <div class="col-2 d-flex align-items-center">
-      <a class="link-offset-2 link-underline link-underline-opacity-0 m-3" routerLink="/main">Return to Home</a>
+      <div class="border rounded-2 bg-light">
+        <a class="link-offset-2 link-underline link-underline-opacity-0 m-2" routerLink="/main">Return to Home</a>
+      </div>
+
     </div>
-    <div class="col-7"></div>
-    <div class="col-2 d-flex justify-content-center py-3">
+    <div class="col"></div>
+    <div class="col-2 d-flex justify-content-end py-3">
       <div class="border border-light bg-success rounded-3 d-flex justify-content-center align-items-center">
         <p class="text-light m-2">{{playerName}}</p>
       </div>
     </div>
-    <div class="col-1">
-      <button type="button" (click)="logout()" class="btn btn-success my-4">Logout</button>
+
+    <div class="col-1 py-2">
+      <div class="d-flex justify-content-center align-items-center" style="height: 100%">
+        <button type="button" (click)="logout()" class="btn btn-light m-2" style="max-width: 100%; max-height: 100%;"><img class="img-fluid" src="assets/icons/logout-1.png" /></button>
+      </div>
     </div>
+
   </div>
 
   <div class="row bg-secondary">
@@ -22,7 +30,114 @@
     <div class="col-1"></div>
   </div>
 
-  <div class="row">
+  <div class="row my-3">
+    <div class="col-3"></div>
 
+    <div id="itemcat" class="col">
+      <nav>
+        <div class="nav nav-tabs" role="tablist">
+          <button id="weapon-tab" class="nav-link" role="tab" (click)="changeCategory('weapon')" data-bs-toggle="tab" type="button">Weapons</button>
+          <button id="armor-tab" class="nav-link" role="tab" (click)="changeCategory('armor')" data-bs-toggle="tab" type="button">Armor</button>
+          <button id="medicine-tab" class="nav-link" role="tab" (click)="changeCategory('medicine')" data-bs-toggle="tab" type="button">Medicines</button>
+          <button id="cosmetics-tab" class="nav-link" role="tab" (click)="changeCategory('cosmetics')" data-bs-toggle="tab" type="button">Cosmetics</button>
+          <button id="limited-tab" class="nav-link" role="tab" (click)="changeCategory('limited')" data-bs-toggle="tab" type="button">Limited</button>
+        </div>
+      </nav>
+    </div>
+
+    <div class="col-3"></div>
   </div>
-</div>
+
+  <div class="row">
+  <div class="col-3"></div>
+
+  <div class="col-6 bg-secondary">
+
+    <div class="tab-content d-flex justify-content-center align-items-center" style="max-height: 65vh; overflow-y: scroll;">
+
+      <div *ngIf="currCategory == 'weapon'" id="weapon-content" style="position: relative;">
+
+        <div class="d-flex flex-wrap justify-content-start" style="max-height: 65vh; overflow-y: scroll;">
+          <div *ngFor="let weapon of weaponList; let i = index" class="d-flex flex-column m-3">
+            <img class="img-thumbnail" src={{weapon.imgLink}} alt="w-image" style="max-width: 15vw; " placement="bottom" ngbTooltip={{weapon.itemDesc}} />
+
+            <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center m-1"><p class="text-light d-flex align-items-center" placement="top" style="max-width: 15vw;" ngbTooltip={{weapon.itemDesc}}>{{weapon.itemName}}</p></div>
+            <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center m-1"><p class="text-light d-flex align-items-center" style="max-width: 15vw;">Owned: {{weapon.quantity}}</p></div>
+            <div class="d-flex flex-row" style="max-height: 5vh; max-width: 15vw">
+              <input id="weap" name="weap" #weap type="number" class="form-control me-2" min="0" max="99" style="width: 75%;" />
+              <button (click)="discardItem(weapon.itemID, weap.value)" class="btn btn-danger" type="button" style="max-height:5vh; max-width: 5vh"><img class="img-fluid" style="max-width: 100%;" src="assets/icons/delete-button.png" /></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="currCategory == 'armor'" id="armor-content" style="position: relative;">
+
+        <div class="d-flex flex-wrap justify-content-start" style="max-height: 65vh; overflow-y: scroll;">
+          <div *ngFor="let armor of armorList; let i = index" class="d-flex flex-column m-3">
+            <img class="img-thumbnail" src={{armor.imgLink}} alt="a-image" style="max-width: 15vw;" placement="bottom" ngbTooltip={{armor.itemDesc}} />
+
+            <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1 me-1"><p class="text-light d-flex align-items-center" placement="top" ngbTooltip={{armor.itemDesc}}>{{armor.itemName}}</p></div>
+            <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1 me-1"><p class="text-light d-flex align-items-center">Owned: {{armor.quantity}}</p></div>
+            <div class="d-flex flex-row" style="max-height: 5vh; max-width: 15vw">
+              <input id="arm" name="arm" #arm type="number" class="form-control me-2" min="0" max="99" style="width: 75%;" />
+              <button (click)="discardItem(armor.itemID, arm.value)" class="btn btn-danger" type="button" style="max-width: 5vh"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div *ngIf="currCategory == 'medicine'" id="medicine-content" style="position: relative;">
+
+        <div class="d-flex flex-wrap justify-content-start" style="max-height: 65vh; overflow-y: scroll;">
+          <div *ngFor="let medicine of medicineList; let i = index" class="d-flex flex-column m-3">
+            <img class="img-thumbnail" src={{medicine.imgLink}} alt="m-image" style="max-width: 15vw;" placement="bottom" ngbTooltip={{medicine.itemDesc}} />
+
+            <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1 me-1"><p class="text-light d-flex align-items-center" placement="top" ngbTooltip={{medicine.itemDesc}}>{{medicine.itemName}}</p></div>
+            <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1 me-1"><p class="text-light d-flex align-items-center">Owned: {{medicine.quantity}}</p></div>
+            <div class="d-flex flex-row" style="max-height: 5vh; max-width: 15vw">
+              <input id="med" name="med" #med type="number" class="form-control me-2" min="0" max="99" style="width: 75%;" />
+              <button (click)="discardItem(medicine.itemID, med.value)" class="btn btn-danger" type="button" style="max-width: 5vh"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="currCategory == 'cosmetics'" id="cosmetics-content" style="position: relative;">
+
+        <div class="d-flex flex-wrap justify-content-start" style="max-height: 65vh; overflow-y: scroll;">
+          <div *ngFor="let cosmetic of cosmeticList; let i = index" class="d-flex flex-column m-3">
+            <img class="img-thumbnail" src={{cosmetic.imgLink}} alt="c-image" style="max-width: 15vw;" placement="bottom" ngbTooltip={{cosmetic.itemDesc}} />
+
+            <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1 me-1"><p class="text-light d-flex align-items-center" placement="top" ngbTooltip={{cosmetic.itemDesc}}>{{cosmetic.itemName}}</p></div>
+            <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1 me-1"><p class="text-light d-flex align-items-center">Owned: {{cosmetic.quantity}}</p></div>
+            <div class="d-flex flex-row" style="max-height: 5vh; max-width: 15vw">
+              <input id="cos" name="cos" #cos type="number" class="form-control me-2" min="0" max="99" style="width: 75%;" />
+              <button (click)="discardItem(cosmetic.itemID, cos.value)" class="btn btn-danger" type="button" style="max-width: 5vh"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="currCategory == 'limited'" id="limited-content" style="position: relative;">
+
+        <div class="d-flex flex-wrap justify-content-start" style="max-height: 65vh; overflow-y: scroll;">
+          <div *ngFor="let limited of limitedList; let i = index" class="d-flex flex-column m-3">
+            <img class="img-thumbnail" src={{limited.imgLink}} alt="l-image" style="max-width: 15vw;" placement="bottom" ngbTooltip={{limited.itemDesc}} />
+
+            <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1 me-1"><p class="text-light d-flex align-items-center" placement="top" ngbTooltip={{limited.itemDesc}}>{{limited.itemName}}</p></div>
+            <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1 me-1"><p class="text-light d-flex align-items-center">Owned: {{limited.quantity}}</p></div>
+            <div class="d-flex flex-row" style="max-height: 5vh; max-width: 15vw">
+              <input id="lim" name="lim" #lim type="number" class="form-control me-2" min="0" max="99" style="width: 75%;" />
+              <button (click)="discardItem(limited.itemID, lim.value)" class="btn btn-danger" type="button" style="max-height:5vh; max-width: 5vh"><img class="img-fluid" src="https://www.clipartbest.com/cliparts/dTr/6a7/dTr6a7K8c.png" /></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="col-3"></div>
+</div></div>

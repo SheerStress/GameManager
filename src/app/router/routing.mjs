@@ -125,6 +125,16 @@ function checkTextInput(value) {
   }
 }
 
+function formatDate(givenDate) {
+
+  let dateString = "" + givenDate;
+  let dateHourDaySec = dateString.split(".");
+
+  let finalDate = dateHourDaySec[0].split("(")[0];
+
+  return finalDate;
+}
+
 
 function createResponse(code, content, err) {
   return {
@@ -151,7 +161,7 @@ app.post("/verifyUser", (req, res) => {
 
       if (err) {
         console.log("find_user error" + err);
-        res.json(createResponse(201, false, "User search error"));
+        res.json(createResponse(201, false, "User search SQL error"));
         return;
       }
 
@@ -161,6 +171,13 @@ app.post("/verifyUser", (req, res) => {
       //if there is at least one row pulled from the database...
       if (results[0].length >= 1) {
         bcrypt.compare(providedPass, results[0][0].password_hash, (error, match) => { //...compare entered password to database hash
+
+          if (error) {
+            console.log("comparison error: " + error);
+            res.json(createResponse(301, false, "Password Comparison Error"))
+            return;
+          }
+
           if (match) { //if the password matches...
             console.log("matched");
             let user = {
@@ -171,7 +188,7 @@ app.post("/verifyUser", (req, res) => {
             }
             
             let token = jwt.sign(user, secret, {
-              expiresIn: 120
+              expiresIn: 240
             }); //create a session token with jwt
 
             console.log("Token: " + token);
@@ -183,16 +200,19 @@ app.post("/verifyUser", (req, res) => {
             req.session.user = results[0][0].user_id;
             console.log("session user: " + req.session.user);
             res.json(createResponse(200, payload, null)); //send the token along with success code
+            return;
 
           } else {
             console.log("not matched");
             res.json(createResponse(201, false, "password does not match")); //return custom error code and message
+            return;
           };
         });
 
       } else { //if no rows are pulled from database
         console.log("no results")
-        res.json(createResponse(202, false, "no records found"));
+        res.json(createResponse(202, false, "No User Records Found"));
+        return;
       };
     });
 
@@ -200,6 +220,7 @@ app.post("/verifyUser", (req, res) => {
     console.log("verification error")
     console.log(error);
     res.json(createResponse(203, false, "could not perform query"));
+    return;
   }
 })
 
@@ -275,6 +296,124 @@ app.post("/getPlayer", (req, res) => {
     return
   };
 });
+
+
+app.post("/updateUsername", (req, res) => {
+
+  try {
+
+    let sql = "Call update_username(?, ?)";
+    let parameters = [req.body.playerID, req.body.newUsername]
+    let updatedUsername = req.body.newUsername;
+
+    database.query(sql, parameters, (error, results) => {
+
+      if (error) {
+        console.log("SQL Update Error: " + error);
+        res.json(createResponse(201, false, "Update SQL Error"))
+        return;
+      };
+
+      try {
+
+        res.json(createResponse(200, {updated: updatedUsername}, null));
+        return;
+
+      } catch (error) {
+
+        console.log("Result processing error: " + error);
+        res.json(createResponse(202, false, "Result Processing Error"));
+        return;
+
+      };
+
+    })
+
+  } catch (error) {
+    console.log("Update Error: " + error);
+    res.json(createResponse(203, false, "Server Update Error"));
+    return;
+  };
+
+});
+
+app.post("/updatePassword", (req, res) => {
+
+  try {
+
+    bcrypt.hash(req.body.newPassword, 10, (err, hash) => {
+
+      if (err) {
+        console.log("Hashing Error: " + err);
+        res.json(301, false, "Password Hashing Error");
+        return;
+      };
+
+      let sql = "Call update_password(?, ?)";
+      let parameters = [req.body.playerID, hash]
+      database.query(sql, parameters, (error, results) => {
+
+        if (error) {
+          console.log("SQL Update Error: " + error);
+          res.json(createResponse(201, false, "Update SQL Error"))
+          return;
+        };
+
+        try {
+
+        } catch (error) {
+          console.log("Result processing error: " + error);
+          res.json(createResponse(202, false, "Result Processing Error"));
+          return;
+        };
+
+      });
+
+
+    });
+
+
+  } catch (error) {
+    console.log("Update Error: " + error);
+    res.json(createResponse(203, false, "Server Update Error"));
+    return;
+  };
+
+});
+
+app.post("/updatePhone", (req, res) => {
+
+  try {
+
+    let sql = "Call update_phone(?, ?)";
+    let parameters = [req.body.playerID, req.body.newPhone]
+    database.query(sql, parameters, (error, results) => {
+      if (error) {
+        console.log("SQL Update Error: " + error);
+        res.json(createResponse(201, false, "Update SQL Error"))
+        return;
+      };
+
+      try {
+
+        res.json(createResponse(200, true, null));
+        return;
+
+      } catch (error) {
+        console.log("Result processing error: " + error);
+        res.json(createResponse(202, false, "Result Processing Error"));
+        return;
+      }
+
+    })
+
+  } catch (error) {
+    console.log("Update Error: " + error);
+    res.json(createResponse(203, false, "Server Update Error"));
+    return;
+  };
+
+})
 
 
 
@@ -387,8 +526,10 @@ app.post("/getMembers", (req, res) => {
         for (let i=0; i<results[0].length; i++) {
           memberNames.push(results[0][i].username);
         };
+        console.log("members " + memberNames[0]);
         res.json(createResponse(200, memberNames, null));
       } else {
+        console.log("No members found")
         res.json(createResponse(200, [], null));
       }
     });
@@ -486,10 +627,14 @@ app.post("/getMessages", (req, res) => {
       try {
         let messageData = [];
         for (let i = 0; i < results[0].length; i++) {
+
+          let newDate = formatDate("" + results[0][i].date_created);
+
+          console.log("new date: " + newDate);
           messageData.push({
             username: results[0][i].username,
             messageContent: results[0][i].message_content,
-            dateCreated: results[0][i].date_created
+            dateCreated: newDate
           })
         }
         console.log(messageData[0]);
@@ -591,11 +736,12 @@ app.post("/getRequest", (req, res) => {
       console.log("Find Request Result");
       console.log(results);
       try {
+        let newDate = formatDate(results[0][0].date_created)
         let requestData = {
           guildID: results[0][0].guild_id,
           guildName: results[0][0].guild_name,
           welcomeMessage: results[0][0].welcome_message,
-          dateCreated: results[0][0].date_created
+          dateCreated: newDate
         };
         res.json(createResponse(200, requestData, null));
 
@@ -630,10 +776,12 @@ app.post("/getAllRequests", (req, res) => {
         let requestData = [];
 
         for (let i = 0; i < results[0].length; i++) {
+
+          let newDate = formatDate(results[0][i].date_created);
           let request = {
             playerID: results[0][i].player_id,
             username: results[0][i].username,
-            dateCreated: results[0][i].date_created
+            dateCreated: newDate
           };
           requestData.push(request);
         };
@@ -753,6 +901,76 @@ app.post("/deleteGuild", (req, res) => {
   };
 
 });
+
+app.post("/getInventory", (req, res) => {
+
+  try {
+    let sql = "Call find_inventory(?)";
+    let parameters = [req.body.playerID];
+    database.query(sql, parameters, (error, results) => {
+
+      if (error) {
+        console.log("Get Inventory SQL Error: " + error);
+        res.json(createResponse(201, false, "Inventory Fetch Error"))
+        return;
+      };
+
+      try {
+
+        let inventory = [];
+        for (let i = 0; i < results[0].length; i++) {
+          let item = {
+            itemID: results[0][i].item_id,
+            itemName: results[0][i].item_name,
+            itemType: results[0][i].item_type,
+            itemDesc: results[0][i].item_description,
+            quantity: results[0][i].quantity,
+            imgLink: results[0][i].image_link
+          }
+          inventory.push(item);
+        };
+        res.json(createResponse(200, inventory, null));
+
+      } catch (error) {
+        console.log("Find Inventory Result Processing Error: " + error);
+        res.json(createResponse(202, false, "Find Inventory Processing Error"));
+        return;
+      }
+
+    })
+
+  } catch (error) {
+    console.log("Inventory fetch error: " + error);
+    res.json(createResponse(203, false, "Inventory Fetch Error"));
+    return;
+  }
+
+});
+
+app.post("/deleteItem", (req, res) => {
+
+  try {
+
+    let sql = "Call delete_player_item(?, ?, ?)";
+    let parameters = [req.body.playerID, req.body.itemID, req.body.quantity];
+    database.query(sql, parameters, (error, results) => {
+
+      if (error) {
+        console.log("Item Delete SQL Error: " + error);
+        res.json(createResponse(201, false, "Item Delete Error"))
+        return;
+      };
+
+      res.json(createResponse(200, true, null));
+    })
+
+  } catch (error) {
+    console.log("Item Discard error: " + error);
+    res.json(createResponse(203, false, "Item Discard Error"));
+    return;
+  }
+
+})
 
 app.get("/getStock", (req, res) => {
 

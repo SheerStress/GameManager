@@ -71,15 +71,29 @@ export class ItemDataService {
     return this.http.post(url, orderData);
   };
 
-  retrieveInventory() {
+  retrieveInventory(pID: number): Observable<any> {
 
+    let url = `http://localhost:3000/getInventory`;
+    let requestData = {
+      playerID: pID
+    };
+
+    return this.http.post(url, requestData);
   };
 
   setInventory(newInventory: Array<InventoryItem>) {
     this.playerInventory = newInventory;
   };
 
-  discardItem() {
+  discardItem(pID: number, iID: number, quantity: number): Observable<any> {
 
+    let url = `http://localhost:3000/deleteItem`;
+    let discardData = {
+      playerID: pID,
+      itemID: iID,
+      quantity: quantity
+    };
+
+    return this.http.post(url, discardData);
   };
 }
