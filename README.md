@@ -2,9 +2,9 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.3.
 
-## Description
+# Description
 
-# Purpose
+## Purpose
 
 A mobile/desktop app designed for compatibility with a fictional fantasy MMO game. Players would be able to access most of their in-game data without needing to log into the game itself. This kind of functionality could be useful if, for example, someone wants to communicate with guild members at a time when they can't access the game software. Players can also use in-game currency to purchase items that will be accessible to them in the game once they can access it again. There are many online games that feature limited-time events, and being able to potentially purchase rare items no matter where you are could be a significant benefit to players who travel frequently. This app also provides basic account setting configuration options, which allow for username changes, password changes, and contact info changes.
 
