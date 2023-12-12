@@ -1,39 +1,40 @@
 <div class="container-fluid">
 
   <div class="row bg-dark">
-    <div class="col-2 d-flex align-items-center">
+    <div class="col-12 d-flex justify-content-start py-2">
+      <div class="border border-light bg-success rounded-3 d-flex justify-content-center align-items-center">
+        <p class="text-light m-2">{{playerName}}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="row bg-secondary">
+    <div class="col-5 d-flex align-items-center">
       <div class="border rounded-2 bg-light">
         <a class="link-offset-2 link-underline link-underline-opacity-0 m-2" routerLink="/main">Return to Home</a>
       </div>
 
     </div>
     <div class="col"></div>
-    <div class="col-2 d-flex justify-content-end py-3">
-      <div class="border border-light bg-success rounded-3 d-flex justify-content-center align-items-center">
-        <p class="text-light m-2">{{playerName}}</p>
-      </div>
-    </div>
-
-    <div class="col-1 py-2">
+    <div class="col-3 py-2">
       <div class="d-flex justify-content-center align-items-center" style="height: 100%">
         <button type="button" (click)="logout()" class="btn btn-light m-2" style="max-width: 100%; max-height: 100%;"><img class="img-fluid" src="assets/icons/logout-1.png" /></button>
       </div>
     </div>
-
   </div>
 
-  <div class="row bg-secondary">
+  <div class="row bg-dark">
     <div class="col">
       <h6 class="display-6 text-light m-3">Guild Creation</h6>
     </div>
-    <div class="col-7"></div>
-    <div class="col-1 d-flex justify-content-center align-items-center">
+    <div class="col"></div>
+    <div class="col-3 d-flex justify-content-center align-items-center">
       <button class="btn btn-success" routerLink="/gsearch" *ngIf="!requestSuccess">Search</button>
     </div>
   </div>
 
   <div class="row" *ngIf="!requestSuccess">
-    <div class="col-4"></div>
+    
     <div class="col">
       <div class="row d-flex justify-content-center">
         <p class="text-light m-3">New Guild Information</p>
@@ -80,7 +81,7 @@
         </div>
       </form>
     </div>
-    <div class="col-4"></div>
+   
   </div>
 
   <div class="row d-flex justify-content-center" *ngIf="requestSuccess">

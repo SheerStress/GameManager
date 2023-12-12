@@ -29,32 +29,35 @@ export interface GuildRequest {
 })
 export class GuildComponent implements OnInit {
 
-  playerName: string;
-  guildName: string;
-  guildGreeting: string;
+  playerName: string;//username of current player
+  guildName: string;//name of currently affiliated guild
+  guildGreeting: string;//greeting for all guild members
 
-  guildMembers: Array<string>;
-  guildMessages: Array<GuildMessage>;
-  guildRequests: Array<GuildRequest>;
+  guildMembers: Array<string>; //array of the names of all current members belonging to same guild
+  guildLeader: string;
+  guildMessages: Array<GuildMessage>; //array of guild messages from other guild members/leader
+  guildRequests: Array<GuildRequest>; //array of all pending guild join requests - used by leader
 
   altMessage: string;
-  altMembers: string;
-  isLeader: boolean;
-  isMember: boolean;
+  altMembers: string; //message to display in place of member list
+  isLeader: boolean; //if current player is the leader of current guild
+  isMember: boolean; //if current player is a member of current guild
 
-  newMessage: string;
+  newMessage: string; //new guild message to be sent to other members
 
-  form: FormGroup;
-  sent: boolean;
-  confirmation: boolean;
+  form: FormGroup;//guild message form
+  sent: boolean; //message send status
+  confirmation: boolean; //confirm guild disband/withdraw
 
   constructor(private router: Router, private formBuilder: FormBuilder, private guildData: GuildDataService, private playerData: PlayerDataService, private itemData: ItemDataService) {
 
+    //initialize variables
     this.playerName = "";
     this.guildName = "";
-    this.guildGreeting = this.guildData.getData().guild.guildGreeting;
+    this.guildGreeting = this.guildData.getData().guild.guildGreeting; 
 
     this.guildMembers = [];
+    this.guildLeader = this.guildData.getData().leader.username;
     this.guildMessages = [{
       username: <string>"",
       messageContent: <string>"",
@@ -75,20 +78,16 @@ export class GuildComponent implements OnInit {
 
   ngOnInit() {
 
-    let validToken = this.playerData.verifyToken();
-    console.log(validToken);
+    let validToken = this.playerData.verifyToken();//check if session token is still valid before anything else
 
     this.playerName = this.playerData.getData().username;
     console.log("guild page initialized");
-    //this.guildData.betterUpdateGuild(this.playerData.getData().playerID);
+
     this.guildData.retrieveGuild(this.playerData.getData().playerID)
       .subscribe(response => {
-        console.log(response.data);
 
         if (response.status == 200) {
-
           this.guildData.updateGuild(response.data, this.playerData.getData().playerID);
-
           this.guildName = this.guildData.currGuild.guild.guildName;
 
           if (this.guildData.currGuild.leader.playerID == this.playerData.getData().playerID) {
@@ -96,8 +95,7 @@ export class GuildComponent implements OnInit {
           };
 
         } else {
-
-          this.guildData.guildReset();
+          this.guildData.guildReset(); //reset all guild data if no affiliated guild is found in database
           this.isLeader = false;
           console.log(response.error);
         }
@@ -105,21 +103,21 @@ export class GuildComponent implements OnInit {
 
 
     this.form = this.formBuilder.group({
-      message: ['', [Validators.required, Validators.maxLength(255)]]
+      message: ['', [Validators.required, Validators.maxLength(255)]] //guild message cannot be blank, and not more than 255 characters
     });
 
-    this.guildData.retrieveMembers(this.playerData.getData().playerID)
+    this.guildData.retrieveMembers(this.playerData.getData().playerID) //get list of fellow guild members - excluding leader
     .subscribe(response => {
       if (response.data) {
         for (let i=0; i<response.data.length; i++) {
           this.guildMembers.push(response.data[i]);
-          console.log("member " + (i + 1) + ": " + response.data[i]);
         };
         if (this.guildMembers.length == 0) {
-          this.altMessage = "Looks like you don't have any members... yet.";
+          this.altMessage = "Looks like you don't have any members... yet."; 
         }
       } else {
         console.log(response.error);
+        return;
       }
     });
 
@@ -139,6 +137,7 @@ export class GuildComponent implements OnInit {
     this.itemData.resetInventory();
   };
 
+  //send the currently typed message
   sendMessage() {
     this.sent = true;
     if (this.form.invalid) {
@@ -148,65 +147,79 @@ export class GuildComponent implements OnInit {
     this.guildData.createMessage(this.playerData.getData().playerID, this.newMessage)
       .subscribe(response => {
         if (response.status == 200) {
-          console.log("message sent!");
           this.requestMessages();
           this.sent = false;
           return;
         };
         console.log(response.error);
+        this.sent = false
         return;
       })
   };
 
+  //get all messages previously sent by fellow guild members
   requestMessages() {
     this.guildData.getMessages(this.playerData.getData().playerID)
       .subscribe(response => {
         if (response.data) {
+          //get array of message objects
           this.guildMessages = response.data;
+          //use alternate message if no messages are found
           if (this.guildMessages.length == 0) {
             this.altMembers = "Looks like you don't have any guild messages... yet.";
-          }
+          };
+          return;
         } else {
           console.log(response.error);
+          return;
         };
       });
   };
 
-
+  //withdraw from current guild (member only)
   withdraw() {
     this.guildData.withdrawMember(this.playerData.getData().playerID)
       .subscribe(response => {
         if (response.status == 200) {
           this.isMember = false;
-          this.guildData.guildReset();
+
+          //log user out after successful withdrawal
+          this.logout();
           this.router.navigateByUrl("/");
-          console.log("successful withdrawal");
+
+          return;
         } else {
           console.log(response.error)
+          return;
         }
       })
   }
 
+  //disband(delete) guild (leader only)
   disbandGuild() {
-    this.guildData.deleteGuild()
+    this.guildData.deleteGuild(this.playerData.getData().playerID)
       .subscribe(response => {
         if (response.status == 200) {
           this.isMember = false;
           this.isLeader = false;
-          this.guildData.guildReset();
+          //log user out on successful disband
+          this.logout();
           this.router.navigateByUrl("/");
           console.log("successful deletion");
+          return;
         } else {
           console.log(response.error);
+          return;
         }
       })
   };
 
-  acceptRequest(index: number) {
+  //function to accept a received guild join request - to be used by a guild leader
+  acceptRequest(index: number) { //index of the accepted request in the guildRequests array
 
     let pID: number = this.guildRequests[index].playerID;
 
-    this.guildData.addMember(pID)
+    this.guildData.addMember(pID) //adds new guild member by sending the id of the player to be added
       .subscribe(response => {
         if (response.status == 200) {
           this.guildData.retrieveMembers(this.playerData.getData().playerID)
@@ -222,26 +235,30 @@ export class GuildComponent implements OnInit {
                 this.guildRequests.splice(index, 1);
               } else {
                 console.log(response.error);
+                return;
               }
             });
         }
       })
   };
 
+  //use guild data service to get all pending requests for current guild - leader only
   getAllRequests() {
     this.guildData.retrieveAllRequests(this.playerData.getData().playerID)
       .subscribe(response => {
 
         if (response.status == 200) {
-          console.log(response.data);
+
           this.guildRequests = response.data
         } else {
           console.log(response.error);
+          return;
         };
 
       })
   }
 
+  //get currently pending guild join requests for current player - non-affiliated only
   getRequest() {
     this.guildData.retrieveRequest(this.playerData.getData().playerID)
       .subscribe(response => {
@@ -249,10 +266,12 @@ export class GuildComponent implements OnInit {
           this.guildRequests = response.data
         } else {
           console.log(response.error);
+          return;
         }
       })
   }
 
+  //reject a specific guild join request
   rejectRequest(index: number) {
 
     let pID: number = this.guildRequests[index].playerID;
@@ -260,9 +279,10 @@ export class GuildComponent implements OnInit {
     this.guildData.rejectRequest(pID)
       .subscribe(response => {
         if (response.status == 200) {
-          this.guildRequests.splice(index, 1);
+          this.guildRequests.splice(index, 1);//remove request from array
         } else {
           console.log(response.error);
+          return;
         }
       })
   };

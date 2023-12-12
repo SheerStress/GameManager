@@ -1,19 +1,22 @@
 <div class="container-fluid">
 
+  <div class="row bg-dark">
+    <div class="col-12 d-flex justify-content-start py-2">
+      <div class="border border-light bg-success rounded-3 d-flex justify-content-center align-items-center">
+        <p class="text-light m-2">{{playerName}}</p>
+      </div>
+    </div>
+  </div>
+
   <div class="row bg-secondary">
-    <div class="col-2 d-flex align-items-center">
+    <div class="col-5 d-flex align-items-center">
       <div class="border rounded-2 bg-light">
         <a class="link-offset-2 link-underline link-underline-opacity-0 m-2" routerLink="/main">Return to Home</a>
       </div>
 
     </div>
     <div class="col"></div>
-    <div class="col-2 d-flex justify-content-end py-3">
-      <div class="border border-light bg-success rounded-3 d-flex justify-content-center align-items-center">
-        <p class="text-light m-2">{{playerName}}</p>
-      </div>
-    </div>
-    <div class="col-1 py-2">
+    <div class="col-3 py-2">
       <div class="d-flex justify-content-center align-items-center" style="height: 100%">
         <button type="button" (click)="logout()" class="btn btn-light m-2" style="max-width: 100%; max-height: 100%;"><img class="img-fluid" src="assets/icons/logout-1.png" /></button>
       </div>
@@ -32,7 +35,7 @@
   </div>
 
   <div class="row">
-    <div class="col-4"></div>
+    <div class="col-1"></div>
 
     <div class="col bg-success d-flex justify-content-center flex-wrap">
       <p class="text-light m-3">Looks like you don't belong to a guild... Yet.</p>
@@ -40,39 +43,51 @@
       <input type="text" class="form-control m-3" [(ngModel)]="searchInput" (change)="searchRequest()" placeholder="Search guilds by name" />
     </div>
 
-    <div class="col-4"></div>
+    <div class="col-1"></div>
   </div>
 
-  <div *ngIf="pendingRequest.guildID !== 0" class="row">
-    <div class="col-3"></div>
-    <div class="col">
+  <div *ngIf="pendingRequest.guildID !== 0" class="row my-2">
+
+    <div class="col-12">
+
       <div class="row d-flex justify-content-center align-items-center">
         <h6 class="display-6 d-flex justify-content-center">Pending Request</h6>
       </div>
+
       <div class="row">
-        <table class="table table-bordered border-light">
-          <thead>
-            <tr>
-              <th class="bg-dark text-light">ID</th>
-              <th class="bg-dark text-light">Guild Name</th>
-              <th class="bg-dark text-light">Message</th>
-              <th class="bg-dark text-light">Date Sent</th>
-              <th class="bg-dark"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="bg-success text-light">{{pendingRequest.guildID}}</td>
-              <td class="bg-success text-light">{{pendingRequest.guildName}}</td>
-              <td class="bg-success text-light">{{pendingRequest.welcomeMessage}}</td>
-              <td class="bg-success text-light">{{pendingRequest.dateCreated}}</td>
-              <td class="bg-light text-light"><button class="btn btn-link btn-rounded btn-sm fw-bold" (click)="deletePending()">Delete</button></td>
-            </tr>
-          </tbody>
-        </table>
+
+        <div class="col-12 d-flex justify-content-center">
+          <div id="pending-border" class="border rounded-3">
+            <table class="table table-hover table-bordered border-light">
+              <thead>
+                <tr>
+                  <th class="bg-dark text-light">ID</th>
+                  <th class="bg-dark text-light">Guild Name</th>
+                  <th class="bg-dark text-light">Message</th>
+                  <th class="bg-dark text-light">Date Sent</th>
+                  <th class="bg-dark"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="bg-success text-light">{{pendingRequest.guildID}}</td>
+                  <td class="bg-success text-light">{{pendingRequest.guildName}}</td>
+                  <td class="bg-success text-light">{{pendingRequest.welcomeMessage}}</td>
+                  <td class="bg-success text-light">{{pendingRequest.dateCreated}}</td>
+                  <td class="bg-light"><button class="btn btn-link btn-rounded btn-sm fw-bold" (click)="deletePending()">Delete</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+
+        </div>
+        
+
       </div>
+
     </div>
-    <div class="col-3"></div>
+
   </div>
 
   <div class="row">
@@ -81,14 +96,14 @@
 
     <div class="col d-flex justify-content-center">
 
-      <div id="listing-border" class="border rounded-3 m-3">
+      <div id="listing-border" class="border rounded-3 my-3">
         <table class="table-success table-hover table-bordered border-light">
 
           <thead>
             <tr class="bg-dark">
               <th class="bg-dark text-light px-1">ID</th>
               <th class="bg-dark text-light px-1">Guild Name</th>
-              <th class="bg-dark text-light px-1 d-flex justify-content-center">Message</th>
+              <th class="bg-dark text-light px-1">Message</th>
               <th class="bg-dark text-light px-1">Members</th>
               <th *ngIf="!waiting"></th>
             </tr>
@@ -96,10 +111,10 @@
 
           <tbody>
             <tr *ngFor="let listing of guildListings; let i = index" class="bg-success">
-              <td class="text-light d-flex justify-content-center px-1">{{listing.guildID}}</td>
-              <td class="bg-success text-light px-1">{{listing.guildName}}</td>
-              <td class="bg-success text-light px-1">{{listing.welcomeMessage}}</td>
-              <td class="bg-success text-light d-flex justify-content-center px-1">{{listing.memberCount}}</td>
+              <td class="text-light d-flex justify-content-center align-items-center">{{listing.guildID}}</td>
+              <td class="bg-success text-light">{{listing.guildName}}</td>
+              <td class="bg-success text-light">{{listing.welcomeMessage}}</td>
+              <td class="bg-success text-light d-flex justify-content-center align-items-center">{{listing.memberCount}}</td>
               <td *ngIf="!waiting" class="bg-light"><button class="btn btn-link btn-rounded btn-sm fw-bold" (click)="joinRequest(i)">Join</button></td>
             </tr>
           </tbody>

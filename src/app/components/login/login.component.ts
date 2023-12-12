@@ -43,6 +43,7 @@ export class LoginComponent implements OnInit {
     this.submitted = false;
     this.responseError = false;
 
+    //initialize form for login submission
     this.form = new FormGroup({
       email: new FormControl(''),
       pass: new FormControl('')
@@ -52,10 +53,11 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.form = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.maxLength(255), Validators.email]],
-      pass: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(32)]]
+      email: ['', [Validators.required, Validators.maxLength(255), Validators.email]], //user must submit email, which should not be longer than 255 characters
+      pass: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(32)]] //user must submit email, which should be between 6-32 characters (technically 8 is min, but 6 for testing)
     })
 
+    //make sure all data is reset
     this.playerdata.logout();
     this.guildData.guildReset();
     this.itemData.resetCart();
@@ -66,38 +68,46 @@ export class LoginComponent implements OnInit {
     return this.form.controls;
   }
 
+  //user login function
   login() {
 
+    //reset error state and enter submitted state
     this.responseError = false;
     this.submitted = true;
 
+    //do not send http if form has issues
     if (this.form.invalid) {
       console.log("Invalid form");
       return;
     };
 
     try {
-
-      console.log("Email: " + this.email + "| Pass: " + this.pass);
+      //check if user exists in db based on email/pass
+      
       this.playerdata.verifyUser(this.email, this.pass)
         .subscribe(response => {
-          console.log(response.data);
+          
 
           if (response.data) {
+            //set new jwt token to local storage for future use
             localStorage.setItem("gameAppToken", response.data.token);
             //logic to decode token and get userID
-            console.log("JWT payload")
-            console.log(jwtDecode(response.data.token));
-            let data = jwtDecode<loginPayload>(response.data.token);
-            console.log(data.id);
 
+            //get user data from token payload
+            let data = jwtDecode<loginPayload>(response.data.token);
+            
+            //get player data using user data
             this.playerdata.retrievePlayer(data.id).subscribe(response => {
               if (response.status == 200) {
 
                 console.log(response.data);
                 //function to set data to service
                 this.playerdata.updatePlayer(response.data);
+
+                //update login state for check by routing guards
                 this.playerdata.setLogin();
+
+                //redirect to main page
                 this.router.navigateByUrl('/main');
               } else {
                 this.responseError = true;
@@ -110,6 +120,7 @@ export class LoginComponent implements OnInit {
             this.guildData.guildReset();
             this.itemData.resetCart();
             this.itemData.resetInventory();
+
             this.responseError = true;
             console.log(response.error);
           }
@@ -120,7 +131,7 @@ export class LoginComponent implements OnInit {
       console.log(error);
       return;
     };
-    //move subscription to service - return payload?
+    
   }
 
 }

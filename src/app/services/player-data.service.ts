@@ -25,7 +25,6 @@ export interface Inventory {
 }
 
 export interface PlayerResponse {
-
       playerID: number,
       username: string,
       currentBalance: number
@@ -36,13 +35,19 @@ export interface PlayerResponse {
   providedIn: 'root'
 })
 
+//Service responsible for all player-related features and data
 export class PlayerDataService {
 
+  domain: string;
   loggedIn: boolean;
   isLeader: boolean;
   currPlayer: PlayerResponse;
 
   constructor(private http: HttpClient, private router: Router, private guildData: GuildDataService, private itemData: ItemDataService) {
+
+    this.domain = `http://localhost:3000`;
+    //this.domain = 'http://gmrouting602.azurewebsites.net';
+
     this.loggedIn = false;
     this.isLeader = false;
     this.currPlayer = {
@@ -57,15 +62,17 @@ export class PlayerDataService {
     return this.currPlayer;
   }
 
+  //create new user from data entered into registration component
   createUser(userData: string): Observable<any> {
-    let url: string = `http://localhost:3000/addUser`;
+    let url: string = this.domain + `/addUser`;
     let newData = JSON.parse(userData);
 
     return this.http.post(url, newData);
   }
 
+  //retrieve player data for current user from database
   retrievePlayer(id: number): Observable<any>{
-    let url: string = `http://localhost:3000/getPlayer`;
+    let url: string = this.domain + `/getPlayer`;
     let userData = {
       userID: id
     }
@@ -73,23 +80,21 @@ export class PlayerDataService {
   }
 
 
-
-
+  //update current player instance
   updatePlayer(data: PlayerResponse) {
     this.currPlayer = data;
-  }
+  };
 
-
-
-
+  //check validity of currently issued token
   verifyToken() {
 
     if (localStorage.getItem("gameAppToken")) {
 
-      let url: string = `http://localhost:3000/verifyToken`;
+      let url: string = this.domain + `/verifyToken`;
       let accessToken = localStorage.getItem("gameAppToken" || "");
       let headerData = new HttpHeaders();
       headerData = headerData.set('Authorization', accessToken || "");
+
       this.http.get<TokenResponse>(url, {headers: headerData}).subscribe(response => {
 
         if (response.data) {
@@ -109,17 +114,18 @@ export class PlayerDataService {
 
   };
 
-
-  loginStatus() {
+//check if user has been logged in
+loginStatus() {
     return this.loggedIn;
   };
 
-  setLogin() {
+//set user to logged in status
+setLogin() {
     this.loggedIn = true;
   };
 
-
-  verifyUser(email:string, pass:string): Observable<any> {
+//check database for existing user after log in submission
+ verifyUser(email:string, pass:string): Observable<any> {
 
     let inputData = {
 
@@ -128,14 +134,15 @@ export class PlayerDataService {
 
       };
 
-    let url: string = `http://localhost:3000/verifyUser`;
+    let url: string = this.domain + `/verifyUser`;
     console.log(this.http.post(url, inputData));
     this.verifyToken();
     return this.http.post(url, inputData);
   };
 
+  //update current player username
   updateUsername(inputName: string): Observable<any> {
-    let url: string = `http://localhost:3000/updateUsername`;
+    let url: string = this.domain + `/updateUsername`;
     let newData = {
       playerID: this.currPlayer.playerID,
       newUsername: inputName
@@ -144,8 +151,9 @@ export class PlayerDataService {
     return this.http.post(url, newData);
   };
 
+  //update current player password
   updatePassword(existingPass: string, inputPass: string): Observable<any> {
-    let url: string = `http://localhost:3000/updatePassword`;
+    let url: string = this.domain + `/updatePassword`;
     let newData = {
       playerID: this.currPlayer.playerID,
       oldPassword: existingPass,
@@ -155,17 +163,27 @@ export class PlayerDataService {
     return this.http.post(url, newData);
   }
 
+  //update current player phone number
   updatePhone(inputPhone: string): Observable<any> {
-    let url: string = `http://localhost:3000/updatePhone`;
+    let url: string = this.domain + `/updatePhone`;
     let newData = {
       playerID: this.currPlayer.playerID,
       newPhone: inputPhone
     };
 
     return this.http.post(url, newData);
+  };
+
+  deleteUser(): Observable<any> {
+    let url: string = this.domain + "/deleteUser";
+    let playerData = {
+      playerID: this.currPlayer.playerID
+    };
+
+    return this.http.post(url, playerData);
   }
 
-
+  //logout current player - reset all data and redirect to log in page
   logout() {
     this.loggedIn = false;
 
@@ -180,14 +198,6 @@ export class PlayerDataService {
     this.itemData.resetCart();
     this.itemData.resetInventory();
 
-    //this.http.get<SessionResponse>("/logout").subscribe(
-      //response => {
-        //if (response) {
-          //console.log("session destroyed")
-        //} else {
-          //console.log("session destroy error");
-        //};
-      //});
 
     this.router.navigateByUrl("/");
     console.log("Player data reset");
@@ -195,13 +205,13 @@ export class PlayerDataService {
 
 
 
-
+  //retrieve user data from database based on email and password input
   getUserData(email: string, pass: string): Observable<any> {
     let inputData = {
       emailAddress: <string>email,
       password: <string>pass
     }
-    let url: string = `http://localhost:3000/getUser`;
+    let url: string = this.domain + `/getUser`;
 
     return this.http.post(url, inputData);
   }
@@ -211,7 +221,7 @@ export class PlayerDataService {
   //dataString -> JSON string of User class data
   setUserData(dataString: string): Observable<any> {
     let newData = JSON.parse(dataString);
-    let url: string = `http://localhost:3000/updateUser`;
+    let url: string = this.domain + `/updateUser`;
 
     return this.http.post(url, newData);
   }

@@ -1,49 +1,54 @@
 <div class="container-fluid">
 
+  <div class="row bg-secondary">
+    <div class="col-12 d-flex justify-content-start py-2">
+      <div class="border border-light bg-success rounded-3 d-flex justify-content-center align-items-center">
+        <p class="text-light m-2">{{playerName}}</p>
+      </div>
+    </div>
+  </div>
+
   <div class="row bg-dark">
-    <div class="col-2 d-flex align-items-center">
+    <div class="col-5 d-flex align-items-center">
       <div class="border rounded-2 bg-light">
         <a class="link-offset-2 link-underline link-underline-opacity-0 m-2" routerLink="/main">Return to Home</a>
       </div>
 
     </div>
     <div class="col"></div>
-    <div class="col-2 d-flex justify-content-end py-3">
-      <div class="border border-light bg-success rounded-3 d-flex justify-content-center align-items-center">
-        <p class="text-light m-2">{{playerName}}</p>
-      </div>
-    </div>
-
-    <div class="col-1 py-2">
+    <div class="col-3 py-2">
       <div class="d-flex justify-content-center align-items-center" style="height: 100%">
         <button type="button" (click)="logout()" class="btn btn-light m-2" style="max-width: 100%; max-height: 100%;"><img class="img-fluid" src="assets/icons/logout-1.png" /></button>
       </div>
     </div>
-
   </div>
 
 
   <div class="row bg-success">
     <div class="col"><h6 class="display-6 text-light">{{guildName}}</h6></div>
-    <div class="col"><p class="text-light m-1">{{guildGreeting}}</p></div>
-    <div class="col-1 d-flex justify-content-center align-items-center">
-      <button class="btn btn-warning" *ngIf="!isLeader && !confirmation" (click)="confirmation = true;">Withdraw</button>
-      <button class="btn btn-danger" *ngIf="isLeader && !confirmation" (click)="confirmation = true;">Disband</button>
+  </div>
+
+  <div class="row bg-dark">
+    <div class="col d-flex align-items-center"><p class="text-light m-1">{{guildGreeting}}</p></div>
+    <div class="col-4 d-flex justify-content-center align-items-center">
+      <button class="btn btn-warning my-2" *ngIf="!isLeader && !confirmation" (click)="confirmation = true;">Withdraw</button>
+      <button class="btn btn-danger my-2" *ngIf="isLeader && !confirmation" (click)="confirmation = true;">Disband</button>
     </div>
   </div>
 
   <div *ngIf="confirmation" class="row my-2 bg-danger">
-    <div class="col-4"></div>
-    <div class="col">
+    
+    <div class="col-12 d-flex justify-content-center">
       <p class="text-warning d-flex justify-content-center" *ngIf="!isLeader && confirmation">Are you sure you want to withdraw?</p>
       <p class="text-warning d-flex justify-content-center" *ngIf="isLeader && confirmation">Are you sure you want to disband?</p>
     </div>
-    <div class="col-4"></div>
+    
   </div>
 
   <div *ngIf="confirmation" class="row">
-    <div class="col-5"></div>
-    <div class="col-2">
+    <div class="col-1"></div>
+
+    <div class="col-10">
       <div class="border rounded-2 bg-secondary d-flex flex-row justify-content-center">
         <div class="m-3">
           <button class="btn btn-danger" *ngIf="!isLeader && confirmation" (click)="withdraw()">Yes</button>
@@ -55,15 +60,17 @@
       </div>
     </div>
 
-    <div class="col-5"></div>
+    <div class="col-1"></div>
   </div>
 
   <div *ngIf="isLeader && guildRequests.length > 0" class="row my-3">
     <div class="col-4"></div>
-    <div class="col">
-      <div>
-        <h6>Pending Requests</h6>
+    <div class="col d-flex flex-column">
+
+      <div class="d-flex justify-content-center">
+        <h6 class="display-6">Pending Requests</h6>
       </div>
+
       <div class="border rounded-3">
         <table class="table table-bordered border-light">
           <thead>
@@ -76,8 +83,8 @@
           </thead>
           <tbody>
             <tr *ngFor="let request of guildRequests; let i = index">
-              <td class="bg-secondary">{{request.playerID}}</td>
-              <td class="bg-secondary">{{request.username}}</td>
+              <td class="bg-secondary text-light">{{request.playerID}}</td>
+              <td class="bg-secondary text-light">{{request.username}}</td>
               <td class="bg-dark"><button class="btn btn-success" type="button" (click)="acceptRequest(i)">Accept</button></td>
               <td class="bg-dark"><button class="btn btn-danger" type="button" (click)="rejectRequest(i)">Reject</button></td>
             </tr>
@@ -89,31 +96,39 @@
     <div class="col-4"></div>
   </div>
 
-  <div class="row my-3" style="max-height: 60vh; max-width: inherit; overflow-y: scroll;">
+  <div class="row my-3" style="max-height: 30vh; max-width: inherit; overflow-y: scroll;">
 
-    <div class="col bg-secondary"></div>
+    <div class="col-5" style="position: sticky; top: 0px; z-index: 4;">
+      <h5 class="display-5 d-flex justify-content-center">Leader</h5>
+      <div class="border rounded-3 bg-success d-flex justify-content-center align-items-center">
+        <h6 class="display-6 text-light">{{guildLeader}}</h6>
+      </div>
+    </div>
 
-    <div class="col-2 d-flex flex-column justify-content-start align-items-center bg-secondary">
-  
-        <h5 class="text-light display-5 m-3 p-3 bg-secondary d-flex justify-content-center align-items-center" style="width: 100%; position: sticky; top: 0px; z-index:4;">Members</h5>
-   
+    <div class="col-7 d-flex flex-column justify-content-start align-items-center bg-secondary">
+
+      <h5 class="text-light display-5 m-3 p-3 bg-secondary d-flex justify-content-center align-items-center" style="width: 100%; position: sticky; top: 0px; z-index:4;">Members</h5>
       <ul class="list-group" *ngIf="(guildMembers.length >= 1)">
         <li class="list-group-item my-3" *ngFor="let member of guildMembers">{{member}}</li>
       </ul>
-
       <p class="text-light" *ngIf="(guildMembers.length == 0)">{{altMessage}}</p>
 
     </div>
+  </div>
 
-    <div class="col-7 d-flex flex-column justify-content-center">
+  <div class="row my-3" style="max-height: 40vh; max-width: inherit; overflow-y: scroll;">
 
-      <div class="border rounded-2 bg-light ms-4" style="width: 100%; position: sticky; top: 0px">
+    <div class="col bg-secondary"></div>
+
+    <div class="col-12 d-flex flex-column justify-content-center">
+
+      <div class="border rounded-2 bg-light" style="width: 100%; position: sticky; top: 0px">
         <h5 class="display-5 m-3 bg-light d-flex justify-content-center align-items-center" style="max-width: 100%;">Messages</h5>
       </div>
 
 
-      <div id="message-border" class="border-light rounded-3 ms-4">
-        <table *ngIf="(guildMessages.length >= 1)" class="table table-bordered border-light ms-3" style="max-width: 100%;">
+      <div id="message-border" class="border-light rounded-3">
+        <table *ngIf="(guildMessages.length >= 1)" class="table table-bordered border-light" style="max-width: 100%;">
           <thead>
             <tr>
               <th class="bg-success text-light">Username</th>
@@ -134,7 +149,7 @@
 
       <p *ngIf="(guildMessages.length == 0)" class="m-3 text-light">No Messages</p>
 
-      <div class="ms-4 border rounded-2 bg-light" style="width: 100%; position: sticky; bottom: 0px;">
+      <div class="border rounded-2 bg-light" style="width: 100%; position: sticky; bottom: 0px;">
         <form id="message-form" class="m-2 bg-light d-flex justify-content-center align-items-center" [formGroup]="form" (ngSubmit)="sendMessage()" style="max-width: 100%;">
           <div class="form-group d-flex flex-row align-items-center justify-content-center" style="width: 100%;">
             <input type="text" [(ngModel)]="newMessage" class="me-1" style="width: 66%;"

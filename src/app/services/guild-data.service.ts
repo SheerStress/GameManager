@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 
 
 
-export interface GuildResponse {
+export interface GuildResponse { //guild/guild leader data received from database should be formatted this way
   guild: {
     guildID: number,
     guildName: string,
@@ -32,13 +32,22 @@ export interface GuildLeader {
 @Injectable({
   providedIn: 'root'
 })
+
+//Service responsible for all guild-related features and data
 export class GuildDataService {
 
+  domain: string;
+  //object to store currently affiliated guild information
   currGuild: GuildResponse;
   leaderInfo: GuildLeader;
+  //mark whether current player is the leader of their guild to determine UI functionality
   isLeader: boolean;
 
   constructor(private http: HttpClient) {
+
+    this.domain = 'http://localhost:3000';
+    //this.domain = 'http://gmrouting602.azurewebsites.net';
+
     this.leaderInfo = {
       playerID: 0,
       username: ""
@@ -59,12 +68,14 @@ export class GuildDataService {
     };
   }
 
+  //get data on current guild instance
   getData() {
     return this.currGuild;
   }
 
+  //function to create a new guild with the current player as leader - player inputs guild name, welcome message for recruitment posting, and greeting for guild members
   createGuild(id: number, name: string, welcome: string, greet: string): Observable<any> {
-    let url = `http://localhost:3000/createGuild`;
+    let url = this.domain + `/createGuild`;
     let newData = {
       playerID: id,
       guildName: name,
@@ -74,16 +85,18 @@ export class GuildDataService {
     return this.http.post(url, newData);
   };
 
-  deleteGuild(): Observable<any> {
-    let url = `http://localhost:3000/deleteGuild`;
+  //function to delete(disband) guild - can only be used by guild leader
+  deleteGuild(pID: number): Observable<any> {
+    let url = this.domain + `/deleteGuild`;
     let guildData = {
+      playerID: pID,
       guildID: this.currGuild.guild.guildID
     };
 
     return this.http.post(url, guildData);
   };
 
-  guildReset() {
+  guildReset() { //reset all guild info upon log out
     this.currGuild.guild = {
       guildID: 0,
       guildName: "",
@@ -100,24 +113,27 @@ export class GuildDataService {
     console.log("Guild data reset");
   };
 
+  //retrieve pending guild join requests - to be used by non-affiliated players
   retrieveRequest(id: number): Observable<any> {
-    let url = `http://localhost:3000/getRequest`
+    let url = this.domain + `/getRequest`
     let requestData = {
       playerID: id
     };
     return this.http.post(url, requestData);
   }
 
+  //retrieve all pending guild join requests - to be used by guild leaders
   retrieveAllRequests(id: number): Observable<any> {
-    let url = `http://localhost:3000/getAllRequests`;
+    let url = this.domain + `/getAllRequests`;
     let requestData = {
       playerID: id
     };
     return this.http.post(url, requestData);
   }
 
+  //create new guild join request - to be used by non-affiliated players (only one can exist at a time)
   createRequest(id: number, gID: number): Observable<any> {
-    let url = `http://localhost:3000/addRequest`;
+    let url = this.domain + `/addRequest`;
     let requestData = {
       playerID: id,
       guildID: gID
@@ -126,8 +142,9 @@ export class GuildDataService {
     return this.http.post(url, requestData);
   };
 
+  //reject guild join request - to be used by guild leaders
   rejectRequest(id: number): Observable<any> {
-    let url = `http://localhost:3000/rejectRequest`;
+    let url = this.domain + `/rejectRequest`;
     let requestData = {
       playerID: id,
       guildID: this.currGuild.guild.guildID
@@ -136,8 +153,9 @@ export class GuildDataService {
     return this.http.post(url, requestData);
   };
 
+  //withdraw pending guild join request - to be used by non-affiliated players
   withdrawRequest(id: number, gID: number): Observable<any> {
-    let url = `http://localhost:3000/deleteRequest`;
+    let url = this.domain + `/deleteRequest`;
     let requestData = {
       playerID: id,
       guildID: gID
@@ -145,8 +163,9 @@ export class GuildDataService {
     return this.http.post(url, requestData);
   }
 
+  //create new guild message to be sent to all other guild members/leader - to be used by guild members/leader
   createMessage(id: number, content: string): Observable<any> {
-    let url = `http://localhost:3000/addMessage`;
+    let url = this.domain + `/addMessage`;
     let messageData = {
       playerID: id,
       messageContent: content
@@ -155,8 +174,9 @@ export class GuildDataService {
     return this.http.post(url, messageData);
   };
 
+  //retrieve all previously sent guild messages - to be used by guild members/leaders
   getMessages(id: number): Observable<any> {
-    let url = `http://localhost:3000/getMessages`;
+    let url = this.domain + `/getMessages`;
     let messageData = {
       playerID: id
     }
@@ -164,8 +184,9 @@ export class GuildDataService {
     return this.http.post(url, messageData);
   };
 
+  //add a new member to current guild using player (player to be added) id - used as part of request acceptance process by guild leaders
   addMember(id: number): Observable<any> {
-    let url = `http://localhost:3000/addMember`;
+    let url = this.domain + `/addMember`;
     let memberData = {
       playerID: id,
       guildID: this.currGuild.guild.guildID
@@ -174,8 +195,9 @@ export class GuildDataService {
     return this.http.post(url, memberData);
   };
 
+  //withdraw from currently affiliated guild using player id- to be used by guild members (not leaders)
   withdrawMember(id: number): Observable<any> {
-    let url = `http://localhost:3000/deleteMember`;
+    let url = this.domain + `/deleteMember`;
     let memberData = {
       playerID: id
     };
@@ -183,8 +205,9 @@ export class GuildDataService {
     return this.http.post(url, memberData);
   }
 
+  //retrieve currently affiliated guild information using player id
   retrieveGuild(id: number): Observable<any> {
-    let url = `http://localhost:3000/getGuild`;
+    let url = this.domain + `/getGuild`;
     let playerData = {
       playerID: id
     };
@@ -193,8 +216,9 @@ export class GuildDataService {
 
   };
 
+  //retrieve the information on all players currently affiliated with current guild - to be used by guild members and leaders
   retrieveMembers(id: number): Observable<any> {
-    let url = `http://localhost:3000/getMembers`;
+    let url = this.domain + `/getMembers`;
     let playerData = {
       playerID: id
     };
@@ -202,20 +226,27 @@ export class GuildDataService {
     return this.http.post(url, playerData);
   };
 
+  //update current guild object instance and determine if current user is guild leader
   updateGuild(currData: GuildResponse, id: number) {
+
     this.currGuild = currData;
+
     if (this.currGuild.leader.playerID == id) {
       this.isLeader = true;
+    } else {
+      this.isLeader = false;
     };
     console.log("Curr Guild Data vvvv + is leader?" + this.isLeader)
     console.log(this.currGuild);
   };
-
+  
   betterUpdateGuild(id: number) {
-    let url = `http://localhost:3000/getGuild`;
+
+    let url = this.domain + `/getGuild`; 
     let playerData = {
       playerID: id
     };
+
     this.http.post<ServerResponse>(url, playerData)
       .subscribe(response => {
         if (response.status == 200 && typeof response.data === "object") {
@@ -232,8 +263,9 @@ export class GuildDataService {
       })
   }
 
+  //search for a list of guilds that match a user-submitted term - to be used by non-affiliated players
   searchGuilds(id:number, term: string): Observable<any> {
-    let url =  `http://localhost:3000/searchGuilds`;
+    let url =  this.domain + `/searchGuilds`;
     let searchData = {
       searchTerm: term 
     };

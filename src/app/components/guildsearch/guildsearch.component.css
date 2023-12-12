@@ -1,3 +1,7 @@
 #listing-border {
     overflow: hidden;
 }
+
+#pending-border {
+    overflow: scroll;
+}

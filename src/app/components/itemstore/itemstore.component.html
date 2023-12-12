@@ -1,25 +1,26 @@
 <div class="container-fluid">
 
   <div class="row bg-dark">
-    <div class="col-2 d-flex align-items-center">
+    <div class="col-12 d-flex justify-content-start py-2">
+      <div class="border border-light bg-success rounded-3 d-flex justify-content-center align-items-center">
+        <p class="text-light m-2">{{playerName}}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="row bg-secondary">
+    <div class="col-5 d-flex align-items-center">
       <div class="border rounded-2 bg-light">
-        <a class="link-offset-2 link-underline link-underline-opacity-0 m-2" style="font-size: 1.2vw;" routerLink="/main">Return to Home</a>
+        <a class="link-offset-2 link-underline link-underline-opacity-0 m-2" routerLink="/main">Return to Home</a>
       </div>
 
     </div>
     <div class="col"></div>
-    <div class="col-2 d-flex justify-content-end py-3">
-      <div class="border border-light bg-success rounded-3 d-flex justify-content-center align-items-center">
-        <p class="text-light m-2" style="font-size: 1.2vw;">{{playerName}}</p>
-      </div>
-    </div>
-
-    <div class="col-1 py-2">
+    <div class="col-3 py-2">
       <div class="d-flex justify-content-center align-items-center" style="height: 100%">
         <button type="button" (click)="logout()" class="btn btn-light m-2" style="max-width: 100%; max-height: 100%;"><img class="img-fluid" src="assets/icons/logout-1.png" /></button>
       </div>
     </div>
-
   </div>
 
   <div class="row bg-primary">
@@ -28,29 +29,31 @@
       <h6 class="display-6 text-light">Item Store</h6>
     </div>
 
-    <div class="col"></div>
+  </div>
 
-    <div class="col-1 d-flex justify-content-center align-items-center">
+  <div class="row bg-dark">
+
+    <div class="col-5 d-flex justify-content-start align-items-center">
       <div class="border rounded-3 bg-light my-3 d-flex align-items-center">
         <p class="text-dark d-flex justify-content-center m-2">G {{currBal}}</p>
       </div>
     </div>
 
-    <div class="col-1"> 
+    <div class="col"></div>
+
+    <div class="col-3">
       <button *ngIf="!processing && !checkout" class="btn btn-success my-3" (click)="startCheckout()">
         Cart
         <span class="badge text-bg-secondary">{{betterCurrCart.length}}</span>
       </button>
 
-      <div *ngIf="!processing && checkout" class="border rounded-2 d-flex align-items-center bg-light my-3" style="max-width: 100%;"><a class="link-offset-2 link-underline link-underline-opacity-0 m-2" (click)="storeRedirect()">Store</a></div>
+      <div *ngIf="!processing && checkout" class="border rounded-2 d-flex align-items-center justify-content-center bg-light my-3" style="max-width: 100%;"><a class="link-offset-2 link-underline link-underline-opacity-0 m-2" (click)="storeRedirect()">Store</a></div>
     </div>
-
   </div>
 
   <div *ngIf="!checkout" class="row my-3">
-    <div class="col-3"></div>
 
-    <div id="itemcat" class="col">
+    <div id="itemcat" class="col-12">
       <nav>
         <div class="nav nav-tabs" role="tablist">
           <button id="weapon-tab" class="nav-link" role="tab" (click)="changeCategory('weapon')" data-bs-toggle="tab" type="button">Weapons</button>
@@ -62,27 +65,26 @@
       </nav>
     </div>
 
-    <div class="col-3"></div>
   </div>
 
   <div *ngIf="!checkout && !processing" class="row">
-    <div class="col-3"></div>
 
-    <div class="col-6 bg-dark">
+    <div class="col-12 bg-dark">
 
-      <div class="tab-content d-flex justify-content-center align-items-center" style="max-height: 65vh; overflow-y: scroll;">
+      <div class="tab-content d-flex justify-content-center align-items-center" style="max-height: 55vh; overflow-y: scroll;">
 
         <div *ngIf="currCategory == 'weapon'" id="weapon-content" style="position: relative;">
 
-          <div class="d-flex flex-wrap justify-content-start" style="max-height: 65vh; overflow-y: scroll;">
+          <div class="d-flex flex-wrap justify-content-start" style="max-height: 55vh; overflow-y: scroll;">
             <div *ngFor="let weapon of weaponList; let i = index" class="d-flex flex-column m-3">
-              <img class="img-thumbnail" src={{weapon.imgLink}} alt="w-image" style="max-width: 15vw; " placement="bottom" ngbTooltip={{weapon.itemDesc}} />
+              <img class="img-thumbnail" src={{weapon.imgLink}} alt="w-image" style="max-width: 30vw; " placement="bottom" ngbTooltip={{weapon.itemDesc}} />
 
-              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1"><p class="text-light d-flex align-items-center" placement="top"  style="max-width: 15vw;" ngbTooltip={{weapon.itemDesc}}>{{weapon.itemName}}</p></div>
-              <div class="d-flex flex-row" style="max-height: 5vh; max-width: 15vw">
-                <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center me-2"><p class="text-light m-1" style="max-width: 10vw; font-size: 0.9vw;">{{weapon.itemPrice}}</p></div>
-                <input id="weap" name="weap" #weap type="number" class="form-control me-2" min="0" max="99" style="width: 75%;" />
-                <button (click)="betterAddToCart(weapon.itemID, weap.value)" class="btn btn-success" type="button" style="max-height:5vh; max-width: 5vh"><p class="text-light">+</p></button>
+              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1"><p class="text-light d-flex align-items-center" placement="top" style="max-width: 30vw;" ngbTooltip={{weapon.itemDesc}}>{{weapon.itemName}}</p></div>
+              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1"><p class="text-light m-1" style="max-width: 30vw;">{{weapon.itemPrice}}</p></div>
+              <div class="d-flex flex-row" style="max-height: 5vh; max-width: 30vw">
+
+                <input id="weap" name="weap" #weap type="number" class="form-control me-2" min="0" max="99" style="max-width: 75%;" />
+                <button (click)="betterAddToCart(weapon.itemID, weap.value)" class="btn btn-success d-flex justify-content-center" type="button" style="max-width: 25%;"><img class="img-fluid" style="max-height: 25px; max-width: 25px; position: relative;" src="assets/icons/Plus2.png"/></button>
               </div>
             </div>
           </div>
@@ -92,17 +94,19 @@
 
           <div class="d-flex flex-wrap justify-content-start" style="max-height: 65vh; overflow-y: scroll;">
             <div *ngFor="let armor of armorList; let i = index" class="d-flex flex-column m-3">
-              <img class="img-thumbnail" src={{armor.imgLink}} alt="a-image" style="max-width: 15vw;" placement="bottom" ngbTooltip={{armor.itemDesc}}/>
+              <img class="img-thumbnail" src={{armor.imgLink}} alt="a-image" style="max-width: 30vw;" placement="bottom" ngbTooltip={{armor.itemDesc}} />
 
-              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1 me-1"><p class="text-light d-flex align-items-center" placement="top" ngbTooltip={{armor.itemDesc}}>{{armor.itemName}}</p></div>
-              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1 me-1"><p class="text-light d-flex align-items-center">{{armor.itemPrice}}</p></div>
-              <div class="d-flex flex-row" style="max-height: 5vh; max-width: 15vw">
+              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1"><p class="text-light d-flex align-items-center" placement="top" style="max-width: 30vw;" ngbTooltip={{armor.itemDesc}}>{{armor.itemName}}</p></div>
+              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1"><p class="text-light m-1" style="max-width: 30vw;">{{armor.itemPrice}}</p></div>
+
+              <div class="d-flex flex-row" style="max-height: 5vh; max-width: 30vw">
+
                 <input id="arm" name="arm" #arm type="number" class="form-control me-2" min="0" max="99" style="width: 75%;" />
-                <button (click)="betterAddToCart(armor.itemID, arm.value)" class="btn btn-success" type="button" style="max-width: 5vh"><p class="text-light">+</p></button>
+                <button (click)="betterAddToCart(armor.itemID, arm.value)" class="btn btn-success d-flex justify-content-center" type="button" style="max-width: 25%;"><img class="img-fluid" style="max-height: 25px; max-width: 25px; position: relative;" src="assets/icons/Plus2.png" /></button>
               </div>
             </div>
           </div>
-         </div>
+        </div>
 
 
         <div *ngIf="currCategory == 'medicine'" id="medicine-content" style="position: relative;">
@@ -110,13 +114,14 @@
           <div class="d-flex flex-wrap justify-content-start" style="max-height: 65vh; overflow-y: scroll;">
 
             <div *ngFor="let medicine of medicineList; let i = index" class="d-flex flex-column m-3">
-              <img class="img-thumbnail" src={{medicine.imgLink}} alt="m-image" style="max-width: 15vw;" placement="bottom" ngbTooltip={{medicine.itemDesc}}/>
+              <img class="img-thumbnail" src={{medicine.imgLink}} alt="m-image" style="max-width: 30vw;" placement="bottom" ngbTooltip={{medicine.itemDesc}} />
 
-              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1 me-1"><p class="text-light d-flex align-items-center" placement="top" ngbTooltip={{medicine.itemDesc}}>{{medicine.itemName}}</p></div>
-              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1 me-1"><p class="text-light d-flex align-items-center">{{medicine.itemPrice}}</p></div>
-              <div class="d-flex flex-row" style="max-height: 5vh; max-width: 15vw">
-                <input id="med" name="med" #med type="number" class="form-control me-2" min="0" max="99" style="width: 75%;"/>
-                <button (click)="betterAddToCart(medicine.itemID, med.value)" class="btn btn-success" type="button" style="max-width: 5vh"><p class="text-light">+</p></button>
+              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1"><p class="text-light d-flex align-items-center" placement="top" style="max-width: 30vw;" ngbTooltip={{medicine.itemDesc}}>{{medicine.itemName}}</p></div>
+              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1"><p class="text-light m-1" style="max-width: 30vw;">{{medicine.itemPrice}}</p></div>
+
+              <div class="d-flex flex-row" style="max-height: 5vh; max-width: 30vw">
+                <input id="med" name="med" #med type="number" class="form-control me-2" min="0" max="99" style="width: 75%;" />
+                <button (click)="betterAddToCart(medicine.itemID, med.value)" class="btn btn-success d-flex justify-content-center" type="button" style="max-width: 25%;"><img class="img-fluid" style="max-height: 25px; max-width: 25px; position: relative;" src="assets/icons/Plus2.png" /></button>
               </div>
             </div>
           </div>
@@ -126,69 +131,74 @@
 
           <div class="d-flex flex-wrap justify-content-start" style="max-height: 65vh; overflow-y: scroll;">
             <div *ngFor="let cosmetic of cosmeticList; let i = index" class="d-flex flex-column m-3">
-              <img class="img-thumbnail" src={{cosmetic.imgLink}} alt="c-image" style="max-width: 15vw;" placement="bottom" ngbTooltip={{cosmetic.itemDesc}}/>
+              <img class="img-thumbnail" src={{cosmetic.imgLink}} alt="c-image" style="max-width: 30vw;" placement="bottom" ngbTooltip={{cosmetic.itemDesc}} />
 
-              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1 me-1"><p class="text-light d-flex align-items-center" placement="top" ngbTooltip={{cosmetic.itemDesc}}>{{cosmetic.itemName}}</p></div>
-              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1 me-1"><p class="text-light d-flex align-items-center">{{cosmetic.itemPrice}}</p></div>
-              <div class="d-flex flex-row" style="max-height: 5vh; max-width: 15vw">
+              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1"><p class="text-light d-flex align-items-center" placement="top" style="max-width: 30vw;" ngbTooltip={{cosmetic.itemDesc}}>{{cosmetic.itemName}}</p></div>
+              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1"><p class="text-light m-1" style="max-width: 30vw;">{{cosmetic.itemPrice}}</p></div>
+
+              <div class="d-flex flex-row" style="max-height: 5vh; max-width: 30vw">
+
                 <input id="cos" name="cos" #cos type="number" class="form-control me-2" min="0" max="99" style="width: 75%;" />
-                <button (click)="betterAddToCart(cosmetic.itemID, cos.value)" class="btn btn-success" type="button" style="max-width: 5vh"><p class="text-light">+</p></button>
+                <button (click)="betterAddToCart(cosmetic.itemID, cos.value)" class="btn btn-success d-flex justify-content-center" type="button" style="max-width: 25%"><img class="img-fluid" style="max-height: 25px; max-width: 25px; position: relative;" src="assets/icons/Plus2.png" /></button>
               </div>
             </div>
-        </div>
+          </div>
         </div>
 
         <div *ngIf="currCategory == 'limited'" id="limited-content" style="position: relative;">
 
           <div class="d-flex flex-wrap justify-content-start" style="max-height: 65vh; overflow-y: scroll;">
             <div *ngFor="let limited of limitedList; let i = index" class="d-flex flex-column m-3">
-              <img class="img-thumbnail" src={{limited.imgLink}} alt="l-image" style="max-width: 15vw;" placement="bottom" ngbTooltip={{limited.itemDesc}}/>
+              <img class="img-thumbnail" src={{limited.imgLink}} alt="l-image" style="max-width: 30vw;" placement="bottom" ngbTooltip={{limited.itemDesc}} />
 
-              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1 me-1"><p class="text-light d-flex align-items-center" placement="top" ngbTooltip={{limited.itemDesc}}>{{limited.itemName}}</p></div>
-              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1 me-1"><p class="text-light d-flex align-items-center">{{limited.itemPrice}}</p></div>
-              <div class="d-flex flex-row" style="max-height: 5vh; max-width: 15vw">
+              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1"><p class="text-light d-flex align-items-center" placement="top" style="max-width: 30vw;" ngbTooltip={{limited.itemDesc}}>{{limited.itemName}}</p></div>
+              <div class="border rounded-3 bg-primary d-flex justify-content-center align-items-center my-1"><p class="text-light m-1" style="max-width: 30vw;">{{limited.itemPrice}}</p></div>
+
+              <div class="d-flex flex-row" style="max-height: 5vh; max-width: 30vw">
+
                 <input id="lim" name="lim" #lim type="number" class="form-control me-2" min="0" max="99" style="width: 75%;" />
-                <button (click)="betterAddToCart(limited.itemID, lim.value)" class="btn btn-success" type="button" style="max-height:5vh; max-width: 5vh"><p class="text-light">+</p></button>
+                <button (click)="betterAddToCart(limited.itemID, lim.value)" class="btn btn-success d-flex justify-content-center" type="button" style="max-width: 25%"><img class="img-fluid" style="max-height: 25px; max-width: 25px; position: relative;" src="assets/icons/Plus2.png" /></button>
               </div>
             </div>
+          </div>
         </div>
+
       </div>
-
     </div>
-    </div>
-
-    <div class="col-3"></div>
   </div>
 
   <div *ngIf="checkout && !processing" class="row my-3">
-    <div class="col-3"></div>
 
-    <div class="col d-flex flex-column justify-content-center">
+    <div class="col-12 d-flex flex-column justify-content-center">
 
       <h5 class="display-5">My Cart</h5>
 
       <div *ngIf="betterCurrCart.length == 0"><p>Looks like you don't have any items in your cart... yet.</p></div>
 
-      <div *ngIf="betterCurrCart.length > 0" class="my-2">
-        <div *ngFor="let item of betterCurrCart; let i = index" class="d-flex flex-column">
-          <img class="img-thumbnail" src={{item.imgLink}} alt="item-img" style="max-width: 15vw;"/>
-          <div><p>{{item.itemName}}</p></div>
-          <div><p>{{item.itemPrice}}</p></div>
-          <div class="d-flex flex-row"> <p class="mx-2">Quantity: {{item.quantity}}</p> <button class="btn btn-danger" (click)="removeFromCart(item.itemID)">Remove</button></div>
+      <div *ngIf="betterCurrCart.length > 0" class="my-2" style="position: relative; ">
+
+        <div *ngFor="let item of betterCurrCart; let i = index" class=" border rounded-2 bg-dark d-flex flex-column my-3 p-3">
+          <img class="img-thumbnail" src={{item.imgLink}} alt="item-img" style="max-width: 30vw;" />
+
+          <div><p class="text-light mt-3">{{item.itemName}}</p></div>
+          <div><p class="text-light">Price: {{item.itemPrice}}</p></div>
+          <div class="border rounded-2 bg-secondary d-flex align-items-center">
+            <div class="d-flex flex-row align-items-center justify-content-between m-2" style="width: 100%;"> <p class="text-light ps-1 pt-3">Quantity: {{item.quantity}}</p> <button class="btn btn-danger my-2" (click)="removeFromCart(item.itemID)">Remove</button></div>
+          </div>
         </div>
+
       </div>
 
       <div *ngIf="betterCurrCart.length > 0" class="my-2">
-        <div class="border rounded-3">
-          <p>Total: {{totalCost}}</p>
+        <div class="border rounded-3 bg-secondary d-flex align-items-center justify-content-start">
+          <p class="text-light d-flex justify-content-center align-items-center p-2">Total: {{totalCost}}</p>
         </div>
       </div>
 
-      <button *ngIf="betterCurrCart.length > 0" class="btn btn-success my-3" style="max-width: 15vw;" type="button" (click)="betterPurchaseItems()">Order</button>
+      <button *ngIf="betterCurrCart.length > 0" class="btn btn-success my-3" style="max-width: 25vw;" type="button" (click)="betterPurchaseItems()">Order</button>
 
     </div>
 
-    <div class="col-3"></div>
   </div>
 
 </div>

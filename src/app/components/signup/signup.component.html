@@ -3,29 +3,30 @@
 
   <div class="row bg-dark" style="height: 10vh;">
 
-    <div class="col-3 d-flex align-items-center">
+    <div class="col-5 d-flex align-items-center">
       <div class="border rounded-2 bg-light">
         <a class="link-offset-2 link-underline link-underline-opacity-0 m-2" routerLink="/">Return to Login</a>
       </div>
     </div>
 
-      <div class="col d-flex justify-content-center align-items-center">
-        <h6 class="display-6 my-3 text-light">New Registration</h6>
-      </div>
-
-    <div class="col-3"></div>
+    <div class="col"></div>
 
   </div>
 
-    <div class="row" style="height: 75vh;">
-      <div class="col"></div>
+  <div class="row bg-secondary">
+    <div class="col d-flex justify-content-center align-items-center">
+      <h6 class="display-6 my-3 text-light">New Registration</h6>
+    </div>
+  </div>
 
-      <div class="col-8 d-flex justify-content-center flex-wrap">
+    <div class="row" style="height: 60vh;">
+
+      <div class="col-12 d-flex justify-content-center flex-wrap">
 
         <div class="border rounded-2 bg-dark p-3 m-3">
           <form id="signup-form" [formGroup]="form" (ngSubmit)="register()">
             <div class="form-group my-3">
-              <label for="email-input" class="text-light">Enter your email</label>
+              <label for="email-input" class="text-light">Enter your email:</label>
               <input id="email-input" type="email" [(ngModel)]="email"
                      [ngClass]="" class="form-control"
                      formControlName="email" placeholder="Enter your email address" />
@@ -34,7 +35,7 @@
               </div>
             </div>
             <div class="form-group">
-              <label for="pass-input" class="text-light">Enter your new password</label>
+              <label for="pass-input" class="text-light">Enter your new password:</label>
               <input id="pass-input" type="password" [(ngModel)]="pass"
                      [ngClass]="" class="form-control"
                      formControlName="pass" placeholder="Enter your password" />
@@ -54,7 +55,7 @@
               </div>
             </div>
             <div class="form-group">
-              <label for="username-input" class="text-light">Enter your player username</label>
+              <label for="username-input" class="text-light">Enter your player username:</label>
               <input id="username-input" type="text" [(ngModel)]="username"
                      [ngClass]="" class="form-control"
                      formControlName="username" placeholder="Enter your display name" />
@@ -64,7 +65,7 @@
               </div>
             </div>
             <div class="form-group my-3">
-              <label for="phone-input" class="text-light">Enter your phone number</label>
+              <label for="phone-input" class="text-light">Enter your phone number:</label>
               <input id="phone-input" type="text" [(ngModel)]="phoneNum"
                      [ngClass]="" class="form-control"
                      formControlName="phoneNum" placeholder="Enter your phone number" />
@@ -79,7 +80,6 @@
 
       </div>
 
-      <div class="col"></div>
     </div>
 
     <div class="row" style="height: 10vh;">

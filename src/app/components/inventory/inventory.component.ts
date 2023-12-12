@@ -53,7 +53,6 @@ export class InventoryComponent implements OnInit {
   ngOnInit() {
 
     let validToken = this.playerData.verifyToken();
-    console.log(validToken);
 
     this.getInventory();
   }
@@ -84,7 +83,7 @@ export class InventoryComponent implements OnInit {
         this.limitedList.push(this.allItems[i]);
 
       } else {
-        console.log("no valid item type");
+        console.log("no valid item type for " + this.allItems[i].itemName);
       }
     }
   };
@@ -103,8 +102,9 @@ export class InventoryComponent implements OnInit {
   };
 
   changeCategory(category: string) {
+
     this.currCategory = category;
-    console.log(this.currCategory);
+
   };
 
   discardItem(selectedID: number, selQuantity: string) {

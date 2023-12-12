@@ -4,6 +4,7 @@ import { PlayerDataService } from '../../services/player-data.service';
 import { GuildDataService } from '../../services/guild-data.service';
 import { ItemDataService } from '../../services/item-data.service';
 
+//interface for items retrieved from database
 export interface Item {
   itemID: number,
   itemName: string,
@@ -13,16 +14,7 @@ export interface Item {
   imgLink: string
 }
 
-export interface cartItem {
-  itemID: number,
-  itemName: string,
-  itemType: string,
-  itemDesc: string,
-  itemPrice: number,
-  quantity: number,
-  imgLink: string
-}
-
+//interface for items in the player's cart
 export interface betterCartItem {
   playerID: number,
   itemID: number,
@@ -38,6 +30,8 @@ export interface betterCartItem {
   templateUrl: './itemstore.component.html',
   styleUrls: ['./itemstore.component.css']
 })
+
+//Component for Item Store feature
 export class ItemstoreComponent implements OnInit {
 
   //current username
@@ -60,20 +54,27 @@ export class ItemstoreComponent implements OnInit {
   //list of all available items
   allItems: Array<Item>;
 
+  //item list by category
   weaponList: Array<Item>;
   armorList: Array<Item>;
   cosmeticList: Array<Item>;
   medicineList: Array<Item>;
   limitedList: Array<Item>;
 
+  //current list of items to buy
   betterCurrCart: Array<betterCartItem>;
 
+  //total order cost
   totalCost: number
 
+  //for UI conditions
   checkout: boolean;
   processing: boolean;
+  error: boolean;
+  errorMsg: string;
 
   constructor(private itemData: ItemDataService, private playerData: PlayerDataService, private guildData: GuildDataService) {
+
     this.playerName = this.playerData.getData().username;
     this.currBal = this.playerData.getData().currentBalance;
 
@@ -93,35 +94,45 @@ export class ItemstoreComponent implements OnInit {
 
     this.checkout = false;
     this.processing = false;
+    this.error = false;
+    this.errorMsg = "";
   };
 
   ngOnInit() {
 
-    let validToken = this.playerData.verifyToken();
-    console.log(validToken);
+    let validToken = this.playerData.verifyToken();//check that session is still valid
 
-    this.getStock();
+    this.getStock(); //get current stock of available items from database
+    this.betterCurrCart = this.itemData.getCart();
+    this.betterUpdateSum();
   }
 
 
   //pull all items available for purchase from database
   getStock() {
+
     //http request via itemstore.service to get array of items
+
+    this.resetError();
     this.itemData.retrieveStock()
       .subscribe(response => {
         if (response.status == 200) {
-          console.log(response.data);
-          this.allItems = response.data;
+          this.allItems = response.data;//set all items to retrieved array
           this.sortItems();
         } else {
-          console.log(response.error);
+          this.error = true;
+          this.errorMsg = response.error;
+          console.log("stock retrieval error" + response.error);
+          return;
         }
       })
 
   };
 
+  //sort items retrieved from database by category
   sortItems() {
 
+    this.resetError();
     this.weaponList = [];
     this.armorList = [];
     this.medicineList = [];
@@ -151,16 +162,19 @@ export class ItemstoreComponent implements OnInit {
     }
   }
 
+  //change category to display
   changeCategory(category: string) {
+    this.resetError();
     this.currCategory = category;
-    console.log(this.currCategory);
   };
 
-  betterAddToCart(iID: number, quantity: string) {
+  //add new item to cart, or adjust quantity of selected item in cart
+  betterAddToCart(iID: number, quantity: string) { //iID is id of selected item, quantity is number to purchase (passed as a string from html, but later converted to number)
 
     let selQuantity = +quantity;
-    console.log(iID);
+    this.resetError();
 
+    //if a purchase is currently being processed, do not allow cart additions
     if (this.processing) {
       return;
     };
@@ -169,8 +183,6 @@ export class ItemstoreComponent implements OnInit {
     let selectedItem = this.allItems.filter((item) => {
       return item.itemID == iID;
     });
-    console.log(selectedItem);
-    //console.log("Selected Item ID: " + selectedItem[0].itemID);
 
     try {
       //check if this item has already been added to the cart
@@ -207,19 +219,21 @@ export class ItemstoreComponent implements OnInit {
       };
 
       console.log(newCartItem);
-      this.betterCurrCart.push(newCartItem);
-      this.itemData.betterSetCart(this.betterCurrCart);
-      this.betterUpdateSum();
+
+      this.betterCurrCart.push(newCartItem); //add item to cart
+      this.itemData.betterSetCart(this.betterCurrCart); //update service cart - to preserve state between components
+      this.betterUpdateSum(); //update order total
 
     } catch (error) {
       console.log("no selected item: " + error);
     };
   };
 
-  removeFromCart(iID: number) {
+  //remove a selected item from cart at checkout
+  removeFromCart(iID: number) { //iID -> id of item to to be removed
 
     try {
-
+      this.resetError();
       for (let i=0; i<this.betterCurrCart.length; i++) {
         if (this.betterCurrCart[i].itemID == iID) {
           this.betterCurrCart.splice(i, 1);
@@ -228,33 +242,41 @@ export class ItemstoreComponent implements OnInit {
       };
 
     } catch (error) {
-
       console.log("deletion error");
-
+      return;
     };
 
   };
 
-  //purchase a currently selected item
+  //purchase an array of selected items
   betterPurchaseItems() {
-    //http request via transaction.service to record/update transaction
+    //http request via item data service to record/update transaction if there is at least one item to purchase
+
+    
+    //go into processing state to prevent additional orders
+    this.resetError();
     if (this.betterCurrCart.length > 0) {
       this.processing = true;
+
       this.itemData.betterSubmitOrder(this.playerData.getData().playerID)
         .subscribe(response => {
-          if (response.status == 200) {
-            this.currBal -= this.betterCurrCart[this.betterCurrCart.length - 1].itemPrice;
-            this.betterCurrCart.pop();
-            this.itemData.betterSetCart(this.betterCurrCart);
-            this.betterPurchaseItems();
+          if (response.status == 200) {//on successful order submission
+            this.currBal -= this.betterCurrCart[this.betterCurrCart.length - 1].itemPrice * this.betterCurrCart[this.betterCurrCart.length - 1].quantity; //update current player balance
+            this.betterCurrCart.pop();//remove item from cart
+            this.itemData.betterSetCart(this.betterCurrCart);//update current cart 
+            this.betterPurchaseItems();//call function again to process next item
           } else {
             this.processing = false;
-            console.log(response.error);
+            this.error = true;
+            this.errorMsg = response.error;
+            console.log("order submission error" + response.error);
+            return;
           };
 
         })
     } else {
       this.processing = false;
+      return;
     }
   };
 
@@ -264,17 +286,23 @@ export class ItemstoreComponent implements OnInit {
 
   storeRedirect() {
     this.checkout = false;
+  };
+
+  resetError() {
+    this.error = false; //reset error state after failed request
   }
 
+  //update total order cost for checkout display
   betterUpdateSum() {
     this.totalCost = 0;
 
     for (let i = 0; i < this.betterCurrCart.length; i++) {
-      this.totalCost += this.betterCurrCart[i].itemPrice * this.betterCurrCart[i].quantity;
+      this.totalCost += this.betterCurrCart[i].itemPrice * this.betterCurrCart[i].quantity; //total cost is: sum of (item(n) cost * item(n) quantity) -> where n ranges from 1 to total item count
     }
   }
 
   logout() {
+    this.resetError()
     this.playerData.logout();
     this.itemData.resetCart();
     this.guildData.guildReset();

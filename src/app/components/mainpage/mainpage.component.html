@@ -1,53 +1,54 @@
 
 <div class="container-fluid bg-dark">
 
-  <div class="row bg-secondary">
-
-    <div class="col-9"></div>
-    <div class="col-2 d-flex justify-content-end py-3">
+  <div class="row bg-dark">
+    <div class="col-12 d-flex justify-content-start py-2">
       <div class="border border-light bg-success rounded-3 d-flex justify-content-center align-items-center">
         <p class="text-light m-2">{{playerName}}</p>
       </div>
     </div>
+  </div>
 
-    <div class="col-1 py-2">
+  <div class="row bg-secondary">
+
+    <div class="col"></div>
+    <div class="col-3 py-2">
       <div class="d-flex justify-content-center align-items-center" style="height: 100%">
         <button type="button" (click)="logout()" class="btn btn-light m-2" style="max-width: 100%; max-height: 100%;"><img class="img-fluid" src="assets/icons/logout-1.png" /></button>
       </div>
     </div>
-
   </div>
 
   <div class="row bg-dark">
-    <div class="col-3"><h1 class="display-6 text-light">Player Data Manager</h1></div>
-    <div class="col"></div>
+    <div class="col-12">
+      <h1 class="display-6 text-light">Player Data Manager</h1>
+    </div>
   </div>
 
   <div class="row bg-secondary d-flex justify-content-center align-items-center">
     <h6 class="text-light my-3 d-flex justify-content-center">{{greeting}}</h6>
   </div>
 
-  <div class="row" style="height: 70vh;">
-    <div class="col-4"></div>
+  <div class="row" style="height: 55vh;">
 
-    <div class="col">
+    <div class="col-12">
 
       <div class="row bg-warning" style="max-height: 17vh;">
         <button id="itemstore" class="btn btn-warning d-flex justify-content-between" style="max-height: inherit; overflow: hidden;" routerLink="/items">
           <h6 class="display-6 text-light">Item Store</h6>
-          <img src="/assets/icons/store-2.png" style="height: 17vw; max-width: 17vw; position: relative; left: 65px; bottom: 45px;" />
+          <img src="/assets/icons/store-2.png" style="height: 50vw; max-width: 50vw; position: relative; left: 36px; bottom: 45px;" />
         </button>
       </div>
       <div class="row bg-success" style="max-height: 17vh;">
         <button id="guildpage" class="btn btn-success d-flex justify-content-between" style="max-height: inherit; overflow: hidden;" (click)="guildRedirect()">
           <h6 class="display-6">Guild</h6>
-          <img src="/assets/icons/guild-2.png" style="height: 17vw; max-width: 17vw; position: relative; left: 70px; bottom: 15px; "/>
+          <img src="/assets/icons/guild-2.png" style="height: 45vw; max-width: 45vw; position: relative; left: 26px; bottom: 15px; " />
         </button>
       </div>
       <div class="row bg-secondary" style="max-height: 17vh;">
         <button id="settings" class="btn btn-secondary d-flex justify-content-between" style="max-height: inherit; overflow: hidden;" routerLink="/settings">
           <h6 class="display-6 text-light">Settings</h6>
-          <img src="/assets/icons/settings-alt.png" style="height: 20vw; max-width: 20vw; position: relative; left: 90px; bottom: 65px; "/>
+          <img src="/assets/icons/settings-alt.png" style="height: 70vw; max-width: 70vw; position: relative; left: 55px; bottom: 65px; " />
         </button>
       </div>
       <div class="row bg-info" style="height: 17vh;">
@@ -58,8 +59,6 @@
 
     </div>
 
-
-    <div class="col-4"></div>
   </div>
 
 </div>

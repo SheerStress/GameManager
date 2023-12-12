@@ -76,7 +76,7 @@ export class SignupComponent implements OnInit {
     .subscribe(response => {
       if (response.status == 200) {
         this.router.navigateByUrl("/login");
-        console.log("successful creation and redirect");
+
       } else {
         console.log("response error: ");
         console.log(response.error);
